@@ -53,7 +53,7 @@ export default function StoreProduct({
         <Card.Title>{formatCurrency(price)}</Card.Title>
       </Card.Body>
       <div className="d-flex align-items-center gap-1 mb-3 ms-3">
-        {renderStars(rating)}
+        {renderStars(rating.rate)}
         {rating.rate}
       </div>
     </Card>

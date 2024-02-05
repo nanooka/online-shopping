@@ -9,7 +9,7 @@ import {
 import { NavLink } from "react-router-dom";
 import * as Icon from "react-bootstrap-icons";
 
-export function Navbar() {
+export default function Navbar() {
   return (
     <NavbarBs className="bg-white shadow-sm mb-3 fixed-top">
       <Container>
