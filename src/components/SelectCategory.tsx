@@ -1,6 +1,5 @@
 import Container from "react-bootstrap/Container";
 import Form from "react-bootstrap/Form";
-// import { ProductType } from "../pages/Home";
 
 interface SelectCategoryProps {
   category: string;
@@ -28,4 +27,3 @@ function SelectCategory({ category, setCategory }: SelectCategoryProps) {
 }
 
 export default SelectCategory;
-// hehehehehehe
