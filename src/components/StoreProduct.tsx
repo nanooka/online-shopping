@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Card } from "react-bootstrap";
 import { renderStars } from "../functions/renderStars";
 import { formatCurrency } from "../functions/formatCurrency";
-import { ListType } from "../pages/Home";
+import { ProductType } from "../pages/Home";
 
 export default function StoreProduct({
   image,
@@ -12,7 +12,7 @@ export default function StoreProduct({
   rating,
   category,
   description,
-}: ListType) {
+}: ProductType) {
   const [isHovered, setIsHovered] = useState(false);
 
   return (

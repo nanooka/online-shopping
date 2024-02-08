@@ -1,23 +1,17 @@
 import Container from "react-bootstrap/Container";
 import Form from "react-bootstrap/Form";
+import { ProductType } from "../pages/Home";
 
 interface SelectCategoryProps {
-  list: {
-    image: string;
-    title: string;
-    price: number;
-    id: number;
-    rating: { rate: number; count: number };
-    category: string;
-    description: string;
-  }[];
-  setFilteredItems: React.Dispatch<React.SetStateAction<any[]>>;
+  list: Array<ProductType>;
+  setFilteredItems: (value: Array<ProductType>) => void;
 }
 
-const SelectCategory: React.FC<SelectCategoryProps> = ({
-  list,
-  setFilteredItems,
-}) => {
+// const SelectCategory: React.FC<SelectCategoryProps> = ({
+//   list,
+//   setFilteredItems,
+// }) => {
+function SelectCategory({ list, setFilteredItems }: SelectCategoryProps) {
   function handleSelect(event: React.ChangeEvent<HTMLSelectElement>) {
     const selectedValue = event.target.value;
 
@@ -46,6 +40,6 @@ const SelectCategory: React.FC<SelectCategoryProps> = ({
       </Form.Select>
     </Container>
   );
-};
+}
 
 export default SelectCategory;

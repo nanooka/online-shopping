@@ -4,7 +4,7 @@ import StoreProduct from "../components/StoreProduct";
 import { useNavigate } from "react-router-dom";
 import SelectCategory from "../components/SelectCategory";
 
-export interface ListType {
+export interface ProductType {
   image: string;
   title: string;
   price: number;
@@ -17,16 +17,15 @@ export interface ListType {
 export default function Home(search: { search: string }) {
   console.log("home", search.search);
 
-  const [list, setList] = useState(Array<ListType>);
+  const [list, setList] = useState(Array<ProductType>);
   const [filteredItems, setFilteredItems] = useState(list);
 
   useEffect(() => {
     async function fetchItems() {
       const res = await fetch("https://fakestoreapi.com/products");
       const data = await res.json();
-      console.log(data);
 
-      const itemData = data.map((item: ListType) => ({
+      const itemData = data.map((item: ProductType) => ({
         image: item.image,
         title: item.title,
         price: item.price,
@@ -35,16 +34,29 @@ export default function Home(search: { search: string }) {
         category: item.category,
         description: item.description,
       }));
+
+      // itemData.map((item: ProductType) => {
+      // if (item.title.toLowerCase().includes(search.search.toLowerCase())) {
       setList(itemData);
       setFilteredItems(itemData);
+      // }
+      // });
     }
     fetchItems();
-  }, []);
+  }, [search.search]);
 
-  list.map((item: ListType) => {
-    if (item.title.toLowerCase().includes(search.search.toLowerCase()))
-      console.log(item.title);
+  console.log("filteredList", filteredItems);
+
+  filteredItems.map((item) => {
+    if (item.title.toLowerCase().includes(search.search.toLowerCase())) {
+      console.log(item);
+    }
   });
+
+  // list.map((item: ProductType) => {
+  //   if (item.title.toLowerCase().includes(search.search.toLowerCase()))
+  //     console.log(item.title);
+  // });
 
   const navigate = useNavigate();
 
@@ -52,14 +64,24 @@ export default function Home(search: { search: string }) {
     <Container style={{ marginTop: "10em" }}>
       <SelectCategory list={list} setFilteredItems={setFilteredItems} />
       <Row xs={1} md={2} lg={3} className="g-5">
-        {filteredItems?.map((item) => (
+        {/* {filteredItems?.map((item) => (
           <Col
             key={item.id}
             onClick={() => navigate(`/${item.id}`, { state: { item } })}
           >
             <StoreProduct {...item} />
           </Col>
-        ))}
+        ))} */}
+        {filteredItems?.map((item) =>
+          item.title.toLowerCase().includes(search.search.toLowerCase()) ? (
+            <Col
+              key={item.id}
+              onClick={() => navigate(`/${item.id}`, { state: { item } })}
+            >
+              <StoreProduct {...item} />
+            </Col>
+          ) : null
+        )}
       </Row>
     </Container>
   );
