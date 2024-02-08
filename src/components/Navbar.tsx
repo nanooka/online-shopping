@@ -8,7 +8,6 @@ import {
 } from "react-bootstrap";
 import { NavLink } from "react-router-dom";
 import * as Icon from "react-bootstrap-icons";
-// import { SetStateAction, useState } from "react";
 
 interface SearchType {
   search: string;
@@ -16,28 +15,9 @@ interface SearchType {
 }
 
 export default function Navbar({ search, setSearch }: SearchType) {
-  // const [search, setSearch] = useState("");
-
-  // function handleSearch(event: {
-  //   preventDefault: () => void;
-  //   target: { value: SetStateAction<string> }[];
-  // }) {
-  //   event.preventDefault();
-  //   setSearch(event.target[0].value);
-  // }
-
-  // function handleSearch(e: React.ChangeEvent<HTMLInputElement>) {
-  //   e.preventDefault();
-  //   console.log(e.target.value);
-  // }
-
   function handleSearch(e: React.ChangeEvent<HTMLInputElement>) {
-    // e.preventDefault();
-    console.log(e.target.value);
     setSearch(e.target.value);
   }
-
-  console.log("Navbar", search);
 
   return (
     <NavbarBs className="bg-white shadow-sm mb-3 fixed-top">
@@ -53,9 +33,6 @@ export default function Navbar({ search, setSearch }: SearchType) {
           <Form
             className="position-relative"
             style={{ width: "300px" }}
-            // onSubmit={handleSearch}
-            // onSubmit={() => setSearch("nanuka")}
-            // onSubmit={handleSearch}
             onSubmit={(e) => e.preventDefault()}
           >
             <Form.Control
