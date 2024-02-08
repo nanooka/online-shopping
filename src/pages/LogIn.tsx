@@ -23,7 +23,6 @@ export default function LogIn() {
           Do not have an account? <Link to={"/signup"}>Sign up</Link>
         </p>
       </Container>
-      {/* <Link to={"./home"}>Home</Link> */}
     </div>
   );
 }

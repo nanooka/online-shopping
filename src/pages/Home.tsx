@@ -16,9 +16,11 @@ export interface ProductType {
 
 export default function Home(search: { search: string }) {
   console.log("home", search.search);
+  //hehehe
+  const [category, setCategory] = useState("category");
 
   const [list, setList] = useState(Array<ProductType>);
-  const [filteredItems, setFilteredItems] = useState(list);
+  // const [filteredItems, setFilteredItems] = useState(list);
 
   useEffect(() => {
     async function fetchItems() {
@@ -38,20 +40,20 @@ export default function Home(search: { search: string }) {
       // itemData.map((item: ProductType) => {
       // if (item.title.toLowerCase().includes(search.search.toLowerCase())) {
       setList(itemData);
-      setFilteredItems(itemData);
+      // setFilteredItems(itemData);
       // }
       // });
     }
     fetchItems();
   }, [search.search]);
 
-  console.log("filteredList", filteredItems);
+  // console.log("filteredList", filteredItems);
 
-  filteredItems.map((item) => {
-    if (item.title.toLowerCase().includes(search.search.toLowerCase())) {
-      console.log(item);
-    }
-  });
+  // filteredItems.map((item) => {
+  //   if (item.title.toLowerCase().includes(search.search.toLowerCase())) {
+  //     console.log(item);
+  //   }
+  // });
 
   // list.map((item: ProductType) => {
   //   if (item.title.toLowerCase().includes(search.search.toLowerCase()))
@@ -62,7 +64,8 @@ export default function Home(search: { search: string }) {
 
   return (
     <Container style={{ marginTop: "10em" }}>
-      <SelectCategory list={list} setFilteredItems={setFilteredItems} />
+      {/* <SelectCategory list={list} setFilteredItems={setFilteredItems} /> */}
+      <SelectCategory category={category} setCategory={setCategory} />
       <Row xs={1} md={2} lg={3} className="g-5">
         {/* {filteredItems?.map((item) => (
           <Col
@@ -72,8 +75,9 @@ export default function Home(search: { search: string }) {
             <StoreProduct {...item} />
           </Col>
         ))} */}
-        {filteredItems?.map((item) =>
-          item.title.toLowerCase().includes(search.search.toLowerCase()) ? (
+        {list?.map((item) =>
+          item.title.toLowerCase().includes(search.search.toLowerCase()) &&
+          (item.category === category || category == "category") ? (
             <Col
               key={item.id}
               onClick={() => navigate(`/${item.id}`, { state: { item } })}
