@@ -1,12 +1,12 @@
 import { Card, Container, Row, Col } from "react-bootstrap";
-import { Link, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { renderStars } from "../functions/renderStars";
 import { formatCurrency } from "../functions/formatCurrency";
-import { useState } from "react";
+// import { useState } from "react";
 
 export default function Product() {
   const location = useLocation();
-  const [isHovered, setIsHovered] = useState(false);
+  // const [isHovered, setIsHovered] = useState(false);
 
   return (
     <Container
@@ -35,11 +35,12 @@ export default function Product() {
             </Card.Body>
           </Col>
         </Row>
-        <span style={{ fontStyle: "italic", color: "gray" }}>
+        {/* <span style={{ fontStyle: "italic", color: "gray" }}>
           category:{" "}
           <Link
             // to={`/category/${location.state?.item.category}`}
             to={"/"}
+            state={{ byCategory: location.state?.item.category }}
             style={{
               fontStyle: "italic",
               color: "gray",
@@ -50,6 +51,9 @@ export default function Product() {
           >
             {location.state?.item.category}
           </Link>
+        </span> */}
+        <span style={{ fontStyle: "italic", color: "gray" }}>
+          category: {location.state?.item.category}
         </span>
       </Card>
     </Container>

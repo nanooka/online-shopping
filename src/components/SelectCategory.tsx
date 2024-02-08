@@ -69,7 +69,6 @@
 
 // export default SelectCategory;
 
-// SelectCategory.tsx
 import Container from "react-bootstrap/Container";
 import Form from "react-bootstrap/Form";
 
@@ -94,10 +93,8 @@ const SelectCategory: React.FC<SelectCategoryProps> = ({
     const selectedValue = event.target.value;
 
     if (selectedValue === "Category") {
-      // If "Category" is selected, show the entire list
       setFilteredItems(list);
     } else {
-      // Filter the list based on the selected category
       const filteredList = list.filter(
         (item) => item.category === selectedValue
       );
@@ -106,7 +103,7 @@ const SelectCategory: React.FC<SelectCategoryProps> = ({
   }
 
   return (
-    <Container>
+    <Container className="mb-5">
       <Form.Select
         aria-label="Default select example"
         style={{ marginTop: "10em", maxWidth: "300px" }}

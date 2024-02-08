@@ -113,7 +113,7 @@ export default function Home() {
         })
       );
       setList(itemData);
-      setFilteredItems(itemData); // Initialize filteredItems with the entire list
+      setFilteredItems(itemData);
     }
     fetchItems();
   }, []);

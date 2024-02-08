@@ -5,13 +5,20 @@ import SignUp from "./pages/SignUp";
 import Home from "./pages/Home";
 import Navbar from "./components/Navbar";
 import Product from "./pages/Product";
+// import { SetStateAction, useState } from "react";
 // import SelectCategory from "./components/SelectCategory";
+import { useState } from "react";
 
 function App() {
+  const [search, setSearch] = useState("");
+  console.log("App", search);
+
   return (
     <>
-      <Navbar />
+      {/* <Navbar search={search} setSearch={setSearch} /> */}
+      {/* <Navbar onSubmit={(value: SetStateAction<string>) => setSearch(value)} /> */}
       {/* <SelectCategory /> */}
+      <Navbar search={search} setSearch={setSearch} />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<LogIn />} />

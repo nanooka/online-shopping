@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Card } from "react-bootstrap";
 import { renderStars } from "../functions/renderStars";
 import { formatCurrency } from "../functions/formatCurrency";
+import { Link } from "react-router-dom";
 
 type StoreProductProps = {
   image: string;
