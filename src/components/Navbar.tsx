@@ -14,6 +14,8 @@ interface SearchType {
   setSearch: (value: string) => void;
 }
 
+const quantity = 1;
+
 export default function Navbar({ search, setSearch }: SearchType) {
   function handleSearch(e: React.ChangeEvent<HTMLInputElement>) {
     setSearch(e.target.value);
@@ -40,11 +42,53 @@ export default function Navbar({ search, setSearch }: SearchType) {
               placeholder="Search"
               value={search}
               onChange={handleSearch}
+              // style={{ height: "50px" }}
             />
-            <Button type="submit" className="position-absolute top-0 end-0">
+            <Button
+              type="submit"
+              className="position-absolute top-0 end-0"
+              // style={{ height: "50px", width: "50px" }}
+            >
               <Icon.Search />
             </Button>
           </Form>
+          <Button
+            variant="outline-primary"
+            className="rounded-circle"
+            style={{
+              width: "3rem",
+              height: "3rem",
+              position: "relative",
+              marginLeft: "2rem",
+              marginRight: "1rem",
+            }}
+          >
+            <Icon.Cart2
+              style={{
+                backgroundColor: "transparent",
+                position: "absolute",
+                left: "50%",
+                bottom: "50%",
+                transform: "translate(-50%, 50%)",
+              }}
+            />
+            {quantity > 0 ? (
+              <div
+                className="rounded-circle bg-danger f-flex justify-content-center align-items-center"
+                style={{
+                  color: "white",
+                  width: "1.5rem",
+                  height: "1.5rem",
+                  position: "absolute",
+                  top: 0,
+                  right: 0,
+                  transform: "translate(25%, -25%)",
+                }}
+              >
+                {quantity}
+              </div>
+            ) : null}
+          </Button>
           <Nav.Link to="/login" as={NavLink} className="d-none d-lg-block">
             Log In
           </Nav.Link>

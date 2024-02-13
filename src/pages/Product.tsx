@@ -1,10 +1,17 @@
-import { Card, Container, Row, Col } from "react-bootstrap";
+import { Card, Container, Row, Col, Button } from "react-bootstrap";
 import { useLocation } from "react-router-dom";
 import { renderStars } from "../functions/renderStars";
 import { formatCurrency } from "../functions/formatCurrency";
+import * as Icon from "react-bootstrap-icons";
+import { useState } from "react";
 
 export default function Product() {
   const location = useLocation();
+  const [isLoved, setIsLoved] = useState(false);
+
+  const loveButtonHandler = () => {
+    setIsLoved((current) => !current);
+  };
 
   return (
     <Container
@@ -15,6 +22,27 @@ export default function Product() {
       }}
     >
       <Card style={{ maxWidth: "900px", padding: "40px", textAlign: "right" }}>
+        {isLoved ? (
+          <Icon.HeartFill
+            onClick={loveButtonHandler}
+            color="red"
+            size={30}
+            style={{
+              cursor: "pointer",
+              alignSelf: "end",
+            }}
+          />
+        ) : (
+          <Icon.Heart
+            onClick={loveButtonHandler}
+            color="red"
+            size={30}
+            style={{
+              cursor: "pointer",
+              alignSelf: "end",
+            }}
+          />
+        )}
         <Row>
           <Col xs={12} md={4}>
             <Card.Img src={location.state?.item.image} />
@@ -36,6 +64,12 @@ export default function Product() {
         <span style={{ fontStyle: "italic", color: "gray" }}>
           category: {location.state?.item.category}
         </span>
+        <Button
+          style={{ width: "150px", alignSelf: "end", marginTop: "8px" }}
+          onClick={() => console.log("first")}
+        >
+          + Add to cart
+        </Button>
       </Card>
     </Container>
   );
