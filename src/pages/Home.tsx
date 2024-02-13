@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
-import { Row, Col, Container } from "react-bootstrap";
+import { Row, Col, Container, Spinner } from "react-bootstrap";
 import StoreProduct from "../components/StoreProduct";
 import { useNavigate } from "react-router-dom";
 import SelectCategory from "../components/SelectCategory";
+import InfiniteScroll from "react-infinite-scroll-component";
 
 export interface ProductType {
   image: string;
@@ -15,49 +16,70 @@ export interface ProductType {
 }
 
 export default function Home(search: { search: string }) {
-  console.log("home", search.search);
   const [category, setCategory] = useState("category");
-
-  const [list, setList] = useState(Array<ProductType>);
+  const [list, setList] = useState<Array<ProductType>>([]);
+  const [printedList, setPrintedList] = useState<Array<ProductType>>([]);
+  const [startNumber, setStartNumber] = useState(0);
+  const [hasMore, setHasMore] = useState(true);
 
   useEffect(() => {
     async function fetchItems() {
       const res = await fetch("https://fakestoreapi.com/products");
       const data = await res.json();
-
-      const itemData = data.map((item: ProductType) => ({
-        image: item.image,
-        title: item.title,
-        price: item.price,
-        id: item.id,
-        rating: item.rating,
-        category: item.category,
-        description: item.description,
-      }));
-
-      setList(itemData);
+      setList(data);
     }
     fetchItems();
-  }, [search.search]);
+  }, []);
+
+  useEffect(() => {
+    setPrintedList(list.slice(0, startNumber + 6));
+  }, [list, startNumber]);
+
+  const fetchMoreData = () => {
+    setTimeout(() => {
+      setStartNumber((prevStartNumber) => prevStartNumber + 3);
+    }, 1000);
+  };
+
+  useEffect(() => {
+    setHasMore(startNumber + 3 < list.length);
+  }, [list, startNumber]);
 
   const navigate = useNavigate();
 
   return (
-    <Container style={{ marginTop: "10em" }}>
-      <SelectCategory category={category} setCategory={setCategory} />
-      <Row xs={1} md={2} lg={3} className="g-5">
-        {list?.map((item) =>
-          item.title.toLowerCase().includes(search.search.toLowerCase()) &&
-          (item.category === category || category == "category") ? (
-            <Col
-              key={item.id}
-              onClick={() => navigate(`/${item.id}`, { state: { item } })}
-            >
-              <StoreProduct {...item} />
-            </Col>
-          ) : null
-        )}
-      </Row>
-    </Container>
+    <InfiniteScroll
+      dataLength={printedList.length}
+      next={fetchMoreData}
+      hasMore={hasMore}
+      loader={
+        <Spinner
+          animation="border"
+          variant="dark"
+          style={{
+            position: "absolute",
+            left: "50%",
+          }}
+        />
+      }
+      scrollThreshold={0.9}
+    >
+      <Container style={{ marginTop: "10em", marginBottom: "50px" }}>
+        <SelectCategory category={category} setCategory={setCategory} />
+        <Row xs={1} md={2} lg={3} className="g-5">
+          {printedList.map((item) =>
+            item.title.toLowerCase().includes(search.search.toLowerCase()) &&
+            (item.category === category || category === "category") ? (
+              <Col
+                key={item.id}
+                onClick={() => navigate(`/${item.id}`, { state: { item } })}
+              >
+                <StoreProduct {...item} />
+              </Col>
+            ) : null
+          )}
+        </Row>
+      </Container>
+    </InfiniteScroll>
   );
 }

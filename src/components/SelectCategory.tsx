@@ -7,7 +7,6 @@ interface SelectCategoryProps {
 }
 
 function SelectCategory({ category, setCategory }: SelectCategoryProps) {
-  console.log("selectCategory", category);
   return (
     <Container className="mb-5">
       <Form.Select
