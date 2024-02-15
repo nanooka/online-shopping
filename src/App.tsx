@@ -5,12 +5,13 @@ import Home from "./pages/Home";
 import Navbar from "./components/Navbar";
 import Product from "./pages/Product";
 import { useState } from "react";
+import { ShoppingCartProvider } from "./context/ShoppingCartContext";
 
 function App() {
   const [search, setSearch] = useState("");
 
   return (
-    <>
+    <ShoppingCartProvider>
       <Navbar search={search} setSearch={setSearch} />
       <Routes>
         <Route path="/" element={<Home search={search} />} />
@@ -18,7 +19,7 @@ function App() {
         <Route path="/signup" element={<SignUp />} />
         <Route path="/:product" element={<Product />} />
       </Routes>
-    </>
+    </ShoppingCartProvider>
   );
 }
 
