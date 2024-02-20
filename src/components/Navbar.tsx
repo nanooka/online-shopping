@@ -8,6 +8,7 @@ import {
 } from "react-bootstrap";
 import { NavLink } from "react-router-dom";
 import * as Icon from "react-bootstrap-icons";
+import { useShoppingCart } from "../context/ShoppingCartContext";
 
 interface SearchType {
   search: string;
@@ -17,6 +18,8 @@ interface SearchType {
 const quantity = 1;
 
 export default function Navbar({ search, setSearch }: SearchType) {
+  const { openCart, cartQuantity } = useShoppingCart();
+
   function handleSearch(e: React.ChangeEvent<HTMLInputElement>) {
     setSearch(e.target.value);
   }
@@ -53,6 +56,7 @@ export default function Navbar({ search, setSearch }: SearchType) {
             </Button>
           </Form>
           <Button
+            onClick={openCart}
             variant="outline-primary"
             className="rounded-circle"
             style={{
@@ -85,7 +89,7 @@ export default function Navbar({ search, setSearch }: SearchType) {
                   transform: "translate(25%, -25%)",
                 }}
               >
-                {quantity}
+                {cartQuantity}
               </div>
             ) : null}
           </Button>
