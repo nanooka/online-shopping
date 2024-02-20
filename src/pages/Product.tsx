@@ -23,7 +23,7 @@ export default function Product() {
     setIsLoved((current) => !current);
   };
 
-  console.log(quantity);
+  // console.log(quantity);
 
   return (
     <Container

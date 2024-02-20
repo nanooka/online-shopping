@@ -12,6 +12,7 @@ type CartItemProps = {
 export function CartItem({ id, quantity }: CartItemProps) {
   const { removeFromCart } = useShoppingCart();
   const [list, setList] = useState<Array<ProductType>>([]);
+  // const [total, setTotal] = useState("0");
 
   useEffect(() => {
     async function fetchItems() {
@@ -21,8 +22,6 @@ export function CartItem({ id, quantity }: CartItemProps) {
     }
     fetchItems();
   }, []);
-
-  console.log("hello from CartItem", list);
 
   const item = list.find((i) => i.id === id);
   if (item === null) return null;
@@ -37,7 +36,10 @@ export function CartItem({ id, quantity }: CartItemProps) {
         <div>
           {item?.title}
           {quantity > 1 && (
-            <span className="text-muted" style={{ fontSize: ".65rem" }}>
+            <span
+              className="text-muted"
+              style={{ fontSize: ".65rem", marginLeft: ".5rem" }}
+            >
               x{quantity}
             </span>
           )}
