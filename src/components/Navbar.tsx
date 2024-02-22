@@ -15,7 +15,7 @@ interface SearchType {
   setSearch: (value: string) => void;
 }
 
-const quantity = 1;
+// const quantity = 1;
 
 export default function Navbar({ search, setSearch }: SearchType) {
   const { openCart, cartQuantity } = useShoppingCart();
@@ -80,22 +80,22 @@ export default function Navbar({ search, setSearch }: SearchType) {
                 transform: "translate(-50%, 50%)",
               }}
             />
-            {quantity > 0 ? (
-              <div
-                className="rounded-circle bg-danger f-flex justify-content-center align-items-center"
-                style={{
-                  color: "white",
-                  width: "1.5rem",
-                  height: "1.5rem",
-                  position: "absolute",
-                  top: 0,
-                  right: 0,
-                  transform: "translate(25%, -25%)",
-                }}
-              >
-                {cartQuantity}
-              </div>
-            ) : null}
+            {/* {quantity > 0 ? ( */}
+            <div
+              className="rounded-circle bg-danger f-flex justify-content-center align-items-center"
+              style={{
+                color: "white",
+                width: "1.5rem",
+                height: "1.5rem",
+                position: "absolute",
+                top: 0,
+                right: 0,
+                transform: "translate(25%, -25%)",
+              }}
+            >
+              {cartQuantity}
+            </div>
+            {/* ) : null} */}
           </Button>
           {/* <Button> */}
           <Link to={"/favorites"} style={{ alignSelf: "center" }}>

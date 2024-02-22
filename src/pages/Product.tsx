@@ -5,6 +5,7 @@ import { formatCurrency } from "../functions/formatCurrency";
 import * as Icon from "react-bootstrap-icons";
 import { useState } from "react";
 import { useShoppingCart } from "../context/ShoppingCartContext";
+import { useFavorite } from "../context/FavoriteContext";
 
 export default function Product() {
   const location = useLocation();
@@ -17,12 +18,16 @@ export default function Product() {
     removeFromCart,
   } = useShoppingCart();
 
+  const { favorites, addToFavorites, removeFromFavorites } =
+    useFavorite() || {};
+
   const quantity = getItemQuantity(location.state?.item.id);
 
-  const loveButtonHandler = () => {
-    setIsLoved((current) => !current);
-  };
-
+  // const loveButtonHandler = () => {
+  //   setIsLoved((current) => !current);
+  // };
+  console.log(isLoved, "console");
+  console.log(favorites);
   return (
     <Container
       style={{
@@ -32,9 +37,15 @@ export default function Product() {
       }}
     >
       <Card style={{ maxWidth: "900px", padding: "40px", textAlign: "right" }}>
-        {isLoved ? (
+        {/* {isLoved ? (
           <Icon.HeartFill
-            onClick={loveButtonHandler}
+            onClick={() => {
+              setIsLoved(false);
+              if (removeFromFavorites) {
+                removeFromFavorites(location.state?.item.id);
+              }
+              console.log(favorites);
+            }}
             color="#dc3545"
             size={30}
             style={{
@@ -44,7 +55,34 @@ export default function Product() {
           />
         ) : (
           <Icon.Heart
-            onClick={loveButtonHandler}
+            onClick={() => {
+              setIsLoved(true);
+
+              if (addToFavorites) {
+                addToFavorites(location.state?.item);
+              }
+              console.log(favorites);
+              console.log("wat empty and added");
+            }}
+            color="#dc3545"
+            size={30}
+            style={{
+              cursor: "pointer",
+              alignSelf: "end",
+            }}
+          />
+        )} */}
+
+        {!isLoved && (
+          <Icon.Heart
+            onClick={() => {
+              setIsLoved(true);
+              if (addToFavorites) {
+                addToFavorites(location.state?.item);
+              }
+              // console.log(favorites);
+              console.log("wat empty and added");
+            }}
             color="#dc3545"
             size={30}
             style={{
@@ -53,6 +91,25 @@ export default function Product() {
             }}
           />
         )}
+
+        {isLoved && (
+          <Icon.HeartFill
+            onClick={() => {
+              setIsLoved(false);
+              if (removeFromFavorites) {
+                removeFromFavorites(location.state?.item.id);
+              }
+              // console.log(favorites);
+            }}
+            color="#dc3545"
+            size={30}
+            style={{
+              cursor: "pointer",
+              alignSelf: "end",
+            }}
+          />
+        )}
+
         <Row>
           <Col xs={12} md={4}>
             <Card.Img src={location.state?.item.image} />
