@@ -23,8 +23,6 @@ export default function Product() {
     setIsLoved((current) => !current);
   };
 
-  // console.log(quantity);
-
   return (
     <Container
       style={{
@@ -37,7 +35,7 @@ export default function Product() {
         {isLoved ? (
           <Icon.HeartFill
             onClick={loveButtonHandler}
-            color="red"
+            color="#dc3545"
             size={30}
             style={{
               cursor: "pointer",
@@ -47,7 +45,7 @@ export default function Product() {
         ) : (
           <Icon.Heart
             onClick={loveButtonHandler}
-            color="red"
+            color="#dc3545"
             size={30}
             style={{
               cursor: "pointer",
@@ -76,12 +74,6 @@ export default function Product() {
         <span style={{ fontStyle: "italic", color: "gray" }}>
           category: {location.state?.item.category}
         </span>
-        {/* <Button
-          style={{ width: "150px", alignSelf: "end", marginTop: "8px" }}
-          onClick={() => increaseCartQuantity(location.state?.item.id)}
-        >
-          + Add to cart
-        </Button> */}
         {quantity === 0 ? (
           <Button
             style={{ width: "150px", alignSelf: "end", marginTop: "8px" }}

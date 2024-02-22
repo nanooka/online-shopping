@@ -6,7 +6,7 @@ import {
   Form,
   Button,
 } from "react-bootstrap";
-import { NavLink } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import * as Icon from "react-bootstrap-icons";
 import { useShoppingCart } from "../context/ShoppingCartContext";
 
@@ -23,6 +23,10 @@ export default function Navbar({ search, setSearch }: SearchType) {
   function handleSearch(e: React.ChangeEvent<HTMLInputElement>) {
     setSearch(e.target.value);
   }
+
+  // function handleFavorites() {
+  //   console.log("clicked");
+  // }
 
   return (
     <NavbarBs className="bg-white shadow-sm mb-3 fixed-top">
@@ -93,6 +97,21 @@ export default function Navbar({ search, setSearch }: SearchType) {
               </div>
             ) : null}
           </Button>
+          {/* <Button> */}
+          <Link to={"/favorites"} style={{ alignSelf: "center" }}>
+            <Icon.HeartFill
+              // onClick={handleFavorites}
+              color="#dc3545"
+              size={30}
+              style={{
+                // cursor: "pointer",
+                // alignSelf: "center",
+                marginLeft: "10px",
+                marginRight: "10px",
+              }}
+            />
+          </Link>
+          {/* </Button> */}
           <Nav.Link to="/login" as={NavLink} className="d-none d-lg-block">
             Log In
           </Nav.Link>
