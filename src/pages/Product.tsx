@@ -8,7 +8,6 @@ import { useFavorite } from "../context/FavoriteContext";
 
 export default function Product() {
   const location = useLocation();
-  // const [isLoved, setIsLoved] = useState(false);
 
   const {
     getItemQuantity,
@@ -17,7 +16,12 @@ export default function Product() {
     removeFromCart,
   } = useShoppingCart();
 
-  const { isLoved, addToFavorites, removeFromFavorites } = useFavorite() || {};
+  const { addToFavorites, removeFromFavorites, favorites } =
+    useFavorite() || {};
+
+  const isProductInFavorites = favorites?.some(
+    (favorite) => favorite.id === location.state?.item.id
+  );
 
   const quantity = getItemQuantity(location.state?.item.id);
 
@@ -30,10 +34,9 @@ export default function Product() {
       }}
     >
       <Card style={{ maxWidth: "900px", padding: "40px", textAlign: "right" }}>
-        {!isLoved && (
+        {!isProductInFavorites ? (
           <Icon.Heart
             onClick={() => {
-              // setIsLoved(true);
               if (addToFavorites) {
                 addToFavorites(location.state?.item);
               }
@@ -45,12 +48,9 @@ export default function Product() {
               alignSelf: "end",
             }}
           />
-        )}
-
-        {isLoved && (
+        ) : (
           <Icon.HeartFill
             onClick={() => {
-              // setIsLoved(false);
               if (removeFromFavorites) {
                 removeFromFavorites(location.state?.item.id);
               }
@@ -63,6 +63,22 @@ export default function Product() {
             }}
           />
         )}
+
+        {/* {isProductInFavorites && (
+          <Icon.HeartFill
+            onClick={() => {
+              if (removeFromFavorites) {
+                removeFromFavorites(location.state?.item.id);
+              }
+            }}
+            color="#dc3545"
+            size={30}
+            style={{
+              cursor: "pointer",
+              alignSelf: "end",
+            }}
+          />
+        )} */}
 
         <Row>
           <Col xs={12} md={4}>

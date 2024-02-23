@@ -6,6 +6,7 @@ import {
   useState,
 } from "react";
 import { useLocalStorage } from "../hooks/useLocalStorage";
+// import Product from "../pages/Product";
 
 type FavoriteProviderProps = {
   children: ReactNode;
@@ -47,7 +48,7 @@ export function FavoriteProvider({ children }: FavoriteProviderProps) {
       localStorage.getItem("favorites") || "[]"
     );
     setFavorites(storedFavorites);
-  }, []);
+  }, [setFavorites]);
 
   useEffect(() => {
     // Store favorites in localStorage whenever it changes
@@ -57,8 +58,8 @@ export function FavoriteProvider({ children }: FavoriteProviderProps) {
   const addToFavorites = (item: FavoriteItem) => {
     if (!favorites.some((favorite) => favorite.id === item.id)) {
       setFavorites((prevFavorites) => [...prevFavorites, item]);
-      setIsLoved(true);
     }
+    setIsLoved(true);
   };
 
   const removeFromFavorites = (id: number) => {
