@@ -3,13 +3,12 @@ import { useLocation } from "react-router-dom";
 import { renderStars } from "../functions/renderStars";
 import { formatCurrency } from "../functions/formatCurrency";
 import * as Icon from "react-bootstrap-icons";
-import { useState } from "react";
 import { useShoppingCart } from "../context/ShoppingCartContext";
 import { useFavorite } from "../context/FavoriteContext";
 
 export default function Product() {
   const location = useLocation();
-  const [isLoved, setIsLoved] = useState(false);
+  // const [isLoved, setIsLoved] = useState(false);
 
   const {
     getItemQuantity,
@@ -18,16 +17,10 @@ export default function Product() {
     removeFromCart,
   } = useShoppingCart();
 
-  const { favorites, addToFavorites, removeFromFavorites } =
-    useFavorite() || {};
+  const { isLoved, addToFavorites, removeFromFavorites } = useFavorite() || {};
 
   const quantity = getItemQuantity(location.state?.item.id);
 
-  // const loveButtonHandler = () => {
-  //   setIsLoved((current) => !current);
-  // };
-  console.log(isLoved, "console");
-  console.log(favorites);
   return (
     <Container
       style={{
@@ -37,51 +30,13 @@ export default function Product() {
       }}
     >
       <Card style={{ maxWidth: "900px", padding: "40px", textAlign: "right" }}>
-        {/* {isLoved ? (
-          <Icon.HeartFill
-            onClick={() => {
-              setIsLoved(false);
-              if (removeFromFavorites) {
-                removeFromFavorites(location.state?.item.id);
-              }
-              console.log(favorites);
-            }}
-            color="#dc3545"
-            size={30}
-            style={{
-              cursor: "pointer",
-              alignSelf: "end",
-            }}
-          />
-        ) : (
-          <Icon.Heart
-            onClick={() => {
-              setIsLoved(true);
-
-              if (addToFavorites) {
-                addToFavorites(location.state?.item);
-              }
-              console.log(favorites);
-              console.log("wat empty and added");
-            }}
-            color="#dc3545"
-            size={30}
-            style={{
-              cursor: "pointer",
-              alignSelf: "end",
-            }}
-          />
-        )} */}
-
         {!isLoved && (
           <Icon.Heart
             onClick={() => {
-              setIsLoved(true);
+              // setIsLoved(true);
               if (addToFavorites) {
                 addToFavorites(location.state?.item);
               }
-              // console.log(favorites);
-              console.log("wat empty and added");
             }}
             color="#dc3545"
             size={30}
@@ -95,11 +50,10 @@ export default function Product() {
         {isLoved && (
           <Icon.HeartFill
             onClick={() => {
-              setIsLoved(false);
+              // setIsLoved(false);
               if (removeFromFavorites) {
                 removeFromFavorites(location.state?.item.id);
               }
-              // console.log(favorites);
             }}
             color="#dc3545"
             size={30}
