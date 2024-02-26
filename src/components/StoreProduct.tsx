@@ -18,6 +18,7 @@ export default function StoreProduct({
   return (
     <Card
       style={{
+        height: "100%",
         cursor: "pointer",
         boxShadow: isHovered ? "0 0 10px rgba(0, 0, 0, 0.5)" : "none",
       }}

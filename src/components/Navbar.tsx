@@ -29,7 +29,7 @@ export default function Navbar({ search, setSearch }: SearchType) {
   // }
 
   return (
-    <NavbarBs className="bg-white shadow-sm mb-3 fixed-top">
+    <NavbarBs className="shadow-sm mb-3 fixed-top navbar">
       <Container>
         <NavbarBs.Brand
           href="/"
@@ -50,18 +50,21 @@ export default function Navbar({ search, setSearch }: SearchType) {
               value={search}
               onChange={handleSearch}
               // style={{ height: "50px" }}
+              style={{ border: "1px solid #212529" }}
             />
             <Button
               type="submit"
               className="position-absolute top-0 end-0"
+              variant="dark"
               // style={{ height: "50px", width: "50px" }}
+              // style={{ backgroundColor: "red", borderColor: "red" }}
             >
               <Icon.Search />
             </Button>
           </Form>
           <Button
             onClick={openCart}
-            variant="outline-primary"
+            variant="outline-dark"
             className="rounded-circle"
             style={{
               width: "3rem",

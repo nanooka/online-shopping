@@ -64,13 +64,21 @@ export default function Home(search: { search: string }) {
       }
       scrollThreshold={0.9}
     >
-      <Container style={{ marginTop: "10em", marginBottom: "50px" }}>
+      <Container
+        style={{
+          marginTop: "10em",
+          marginBottom: "50px",
+          // width: "100vw",
+          // backgroundColor: "red",
+        }}
+      >
         <SelectCategory category={category} setCategory={setCategory} />
         <Row xs={1} md={2} lg={3} className="g-5">
           {printedList.map((item) =>
             item.title.toLowerCase().includes(search.search.toLowerCase()) &&
             (item.category === category || category === "category") ? (
               <Col
+                // style={{ height: "400px" }}
                 key={item.id}
                 onClick={() => navigate(`/${item.id}`, { state: { item } })}
               >

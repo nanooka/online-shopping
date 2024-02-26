@@ -14,7 +14,7 @@ type FavoriteProviderProps = {
 
 type FavoriteItem = {
   id: number;
-  name: string;
+  // name: string;
   // Add more properties as needed
 };
 

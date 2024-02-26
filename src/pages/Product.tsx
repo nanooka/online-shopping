@@ -63,23 +63,6 @@ export default function Product() {
             }}
           />
         )}
-
-        {/* {isProductInFavorites && (
-          <Icon.HeartFill
-            onClick={() => {
-              if (removeFromFavorites) {
-                removeFromFavorites(location.state?.item.id);
-              }
-            }}
-            color="#dc3545"
-            size={30}
-            style={{
-              cursor: "pointer",
-              alignSelf: "end",
-            }}
-          />
-        )} */}
-
         <Row>
           <Col xs={12} md={4}>
             <Card.Img src={location.state?.item.image} />
