@@ -1,30 +1,45 @@
-# React + TypeScript + Vite
+# Online Shopping
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Online Shopping is an e-commerce platform where you can enjoy shopping from home. At our website, you can find things such as clothes, jewelry, electronics, and more.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- User Authentication: Secure login and registration system to ensure the safety of user accounts.
 
-## Expanding the ESLint configuration
+- Shopping Cart: Convenient shopping cart feature to add and manage selected items before checkout.
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+- Wishlist: Save desired items for future purchase or sharing with others.
 
-- Configure the top-level `parserOptions` property like this:
+- Responsive Design: Mobile-friendly design to ensure seamless shopping experiences across devices.
 
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
-```
+## Technologies Used
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+- Frontend: Typescript, React, CSS
+- Backend: Node.js, Express.js
+- Database: MongoDB
+- Authentication: JSON Web Tokens (JWT)
+
+## Installation
+
+To run the website locally, follow these steps:
+
+1. Clone this repository.
+2. Navigate to the project directory.
+3. Install dependencies by running npm install.
+4. Set up environment variables for configuration, such as database connection string, API keys for users, etc.
+5. Run the backend server using npm start.
+6. Navigate to the client directory and start the frontend application using npm start.
+
+## Contributing
+
+I welcome contributions from the community to improve the website's functionality, user experience, and overall performance. If you'd like to contribute, please follow these steps:
+
+1. Fork the repository.
+2. Create your feature branch (git checkout -b feature/YourFeature).
+3. Commit your changes (git commit -am 'Add some feature').
+4. Push to the branch (git push origin feature/YourFeature).
+5. Create a new Pull Request.
+
+## Contact
+
+If you have any questions, suggestions, or concerns, please don't hesitate to contact me at nana.grdzelishvili7@gmail.com. I appreciate your feedback!
