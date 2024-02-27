@@ -29,7 +29,10 @@ export default function Navbar({ search, setSearch }: SearchType) {
   // }
 
   return (
-    <NavbarBs className="shadow-sm mb-3 fixed-top navbar">
+    <NavbarBs
+      className="shadow-sm mb-3 fixed-top"
+      style={{ backgroundColor: "#ebb3f4" }}
+    >
       <Container>
         <NavbarBs.Brand
           href="/"
@@ -45,12 +48,14 @@ export default function Navbar({ search, setSearch }: SearchType) {
             onSubmit={(e) => e.preventDefault()}
           >
             <Form.Control
+              className="form-control"
               type="text"
               placeholder="Search"
               value={search}
               onChange={handleSearch}
               // style={{ height: "50px" }}
-              style={{ border: "1px solid #212529" }}
+              // style={{ border: "1px solid #212529" }}
+              // style={{ border: "1px solid white" }}
             />
             <Button
               type="submit"

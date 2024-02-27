@@ -20,7 +20,7 @@ export default function SignUp() {
             <Form.Label>Confirm Password</Form.Label>
             <Form.Control type="password" placeholder="Confirm Password" />
           </Form.Group>
-          <Button variant="primary" type="submit">
+          <Button variant="dark" type="submit">
             Sign Up
           </Button>
         </Form>

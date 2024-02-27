@@ -25,7 +25,7 @@ export function ShoppingCart({ isOpen }: ShoppingCartProps) {
 
   return (
     <Offcanvas show={isOpen} onHide={closeCart} placement="end">
-      <Offcanvas.Header closeButton>
+      <Offcanvas.Header closeButton style={{ backgroundColor: "#f3e3f6" }}>
         <Offcanvas.Title>Cart</Offcanvas.Title>
       </Offcanvas.Header>
       <Offcanvas.Body>

@@ -86,6 +86,7 @@ export default function Product() {
         </span>
         {quantity === 0 ? (
           <Button
+            variant="dark"
             style={{ width: "150px", alignSelf: "end", marginTop: "8px" }}
             onClick={() => increaseCartQuantity(location.state?.item.id)}
           >
@@ -101,6 +102,7 @@ export default function Product() {
               style={{ gap: ".5rem" }}
             >
               <Button
+                variant="dark"
                 onClick={() => decreaseCartQuantity(location.state?.item.id)}
               >
                 -
@@ -109,6 +111,7 @@ export default function Product() {
                 <span className="fs-3">{quantity}</span> in cart
               </div>
               <Button
+                variant="dark"
                 onClick={() => increaseCartQuantity(location.state?.item.id)}
               >
                 +
