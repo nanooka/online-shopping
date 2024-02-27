@@ -2,6 +2,8 @@
 
 Online Shopping is an e-commerce platform where you can enjoy shopping from home. At our website, you can find things such as clothes, jewelry, electronics, and more.
 
+![preview](website.png)
+
 ## Features
 
 - User Authentication: Secure login and registration system to ensure the safety of user accounts.
