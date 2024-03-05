@@ -1,5 +1,5 @@
 // import { useEffect, useState } from "react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Container, Form, Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
 
@@ -8,38 +8,21 @@ export default function SignUp() {
   const [emailInput, setEmailInput] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [passwordsMatch, setPasswordsMatch] = useState("");
 
-  // useEffect(() => {
-  //   fetch("/users", {
-  //     method: "POST",
-  //     body: JSON.stringify(handleSubmit),
-  //   });
-  // }, []);
-
-  // function sending() {
-  //   fetch("/users", {
-  //     method: "POST",
-  //     body: JSON.stringify(handleSubmit),
-  //   });
-  // }
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  function emailHandler(e: any) {
+  function emailHandler(e: React.ChangeEvent<HTMLInputElement>) {
     setEmailInput(e.target.value);
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  function passwordHandler(e: any) {
+  function passwordHandler(e: React.ChangeEvent<HTMLInputElement>) {
     setPassword(e.target.value);
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  function confirmPasswordHandler(e: any) {
+  function confirmPasswordHandler(e: React.ChangeEvent<HTMLInputElement>) {
     setConfirmPassword(e.target.value);
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  async function handleSubmit(e: any) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const userInfo = {
       email: emailInput,
@@ -49,13 +32,23 @@ export default function SignUp() {
 
     console.log(userInfo);
     // return userInfo;
-    await fetch("http://localhost:3000/users", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(userInfo),
-    });
+    if (confirmPassword === "") {
+      setPasswordsMatch("please confirm password");
+    } else if (password !== confirmPassword) {
+      setPasswordsMatch("password do not match!");
+    } else {
+      setPasswordsMatch("");
+      await fetch("/users", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(userInfo),
+      });
+      setEmailInput("");
+      setPassword("");
+      setConfirmPassword("");
+    }
   }
 
   return (
@@ -64,14 +57,15 @@ export default function SignUp() {
         <h1>Registration</h1>
         <Form
           className="d-flex flex-column"
-          style={{ width: "240px" }}
-          // onSubmit={}
+          style={{ width: "240px", position: "relative" }}
+          onSubmit={handleSubmit}
         >
           <Form.Group className="mb-3" controlId="formBasicEmail">
             <Form.Label>Email address</Form.Label>
             <Form.Control
               type="email"
               placeholder="Enter email"
+              value={emailInput}
               onChange={emailHandler}
             />
           </Form.Group>
@@ -81,18 +75,36 @@ export default function SignUp() {
             <Form.Control
               type="password"
               placeholder="Password"
+              value={password}
               onChange={passwordHandler}
             />
           </Form.Group>
-          <Form.Group className="mb-3" controlId="formBasicPassword">
+          <Form.Group className="mb-3" controlId="formBasicPasswordConfirm">
             <Form.Label>Confirm Password</Form.Label>
             <Form.Control
               type="password"
               placeholder="Confirm Password"
+              value={confirmPassword}
               onChange={confirmPasswordHandler}
             />
           </Form.Group>
-          <Button variant="dark" type="submit" onClick={handleSubmit}>
+          <span
+            style={{
+              color: "red",
+              fontSize: "14px",
+              position: "absolute",
+              top: "241px",
+              left: "42px",
+            }}
+          >
+            {passwordsMatch}
+          </span>
+          <Button
+            variant="dark"
+            type="submit"
+            // onClick={handleSubmit}
+            style={{ marginTop: "10px" }}
+          >
             Sign Up
           </Button>
         </Form>
