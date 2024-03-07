@@ -9,6 +9,7 @@ export default function SignUp() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [passwordsMatch, setPasswordsMatch] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   function emailHandler(e: React.ChangeEvent<HTMLInputElement>) {
     setEmailInput(e.target.value);
@@ -38,16 +39,22 @@ export default function SignUp() {
       setPasswordsMatch("password do not match!");
     } else {
       setPasswordsMatch("");
-      await fetch("/users", {
+      const response = await fetch("/auth/signup", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(userInfo),
       });
-      setEmailInput("");
-      setPassword("");
-      setConfirmPassword("");
+
+      if (response.status === 400) {
+        setErrorMessage(await response.text());
+      } else if (response.ok) {
+        setEmailInput("");
+        setPassword("");
+        setConfirmPassword("");
+        setErrorMessage("");
+      }
     }
   }
 
@@ -55,6 +62,7 @@ export default function SignUp() {
     <>
       <Container className="d-flex flex-column align-items-center justify-content-center vh-100">
         <h1>Registration</h1>
+        {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
         <Form
           className="d-flex flex-column"
           style={{ width: "240px", position: "relative" }}
@@ -99,17 +107,12 @@ export default function SignUp() {
           >
             {passwordsMatch}
           </span>
-          <Button
-            variant="dark"
-            type="submit"
-            // onClick={handleSubmit}
-            style={{ marginTop: "10px" }}
-          >
+          <Button variant="dark" type="submit" style={{ marginTop: "10px" }}>
             Sign Up
           </Button>
         </Form>
         <p className="text-muted mt-2">
-          Already have an account? <Link to="/login">Log in</Link>
+          Already have an account? <Link to={"/login"}>Log in</Link>
         </p>
       </Container>
     </>
