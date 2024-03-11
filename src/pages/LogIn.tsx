@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 export default function LogIn() {
   const [emailInput, setEmailInput] = useState("");
   const [password, setPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   function emailHandler(e: React.ChangeEvent<HTMLInputElement>) {
     setEmailInput(e.target.value);
@@ -23,15 +24,25 @@ export default function LogIn() {
 
     console.log(userInfo);
 
-    await fetch("/auth/login", {
+    const response = await fetch("/auth/login", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(userInfo),
     });
-    setEmailInput("");
-    setPassword("");
+
+    if (response.ok) {
+      const data = await response.json();
+      const token = data.token;
+      console.log(token);
+      localStorage.setItem("token", token);
+      setEmailInput("");
+      setPassword("");
+      setErrorMessage("");
+    } else {
+      setErrorMessage("email or password is not correct");
+    }
   }
 
   return (
@@ -40,7 +51,7 @@ export default function LogIn() {
         <h1>Log In</h1>
         <Form
           className="d-flex flex-column"
-          style={{ width: "240px" }}
+          style={{ width: "240px", position: "relative" }}
           onSubmit={handleSubmit}
         >
           <Form.Group className="mb-3" controlId="formBasicEmail">
@@ -61,7 +72,18 @@ export default function LogIn() {
               onChange={passwordHandler}
             />
           </Form.Group>
-          <Button variant="dark" type="submit">
+          <span
+            style={{
+              color: "red",
+              fontSize: "14px",
+              position: "absolute",
+              top: "157px",
+              left: "20px",
+            }}
+          >
+            {errorMessage}
+          </span>
+          <Button variant="dark" type="submit" style={{ marginTop: "10px" }}>
             Log In
           </Button>
         </Form>
