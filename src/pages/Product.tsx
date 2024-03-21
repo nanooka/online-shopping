@@ -11,7 +11,7 @@ import Cookies from "js-cookie";
 
 export default function Product() {
   const userID = Cookies.get("userID");
-  console.log(userID);
+  // console.log(userID);
 
   const [data, setData] = useState(null);
 
@@ -53,7 +53,7 @@ export default function Product() {
       if (!response.ok) {
         throw new Error("Failed to fetch data");
       }
-      console.log("response: ", response);
+      // console.log("response: ", response);
       const jsonData = await response.json();
 
       setData(jsonData);
@@ -63,6 +63,89 @@ export default function Product() {
     if (addToFavorites) {
       addToFavorites(location.state?.item);
     }
+  }
+  async function removing() {
+    try {
+      const requestData = {
+        userId: userID,
+        productId: location.state?.item.id,
+      };
+      const headers = {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      };
+      const response = await fetch("http://localhost:3000/favorites/remove", {
+        method: "DELETE",
+        headers: headers,
+        body: JSON.stringify(requestData),
+      });
+      if (!response.ok) {
+        throw new Error("Failed to fetch data");
+      }
+      // console.log("response: ", response);
+      const jsonData = await response.json();
+      setData(jsonData);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+    if (removeFromFavorites) {
+      removeFromFavorites(location.state?.item.id);
+    }
+  }
+
+  async function addToCart() {
+    try {
+      const requestData = {
+        userId: userID,
+        productId: location.state?.item.id,
+        quantity: 1,
+      };
+      const headers = {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      };
+      const response = await fetch("http://localhost:3000/cart/add", {
+        method: "POST",
+        headers: headers,
+        body: JSON.stringify(requestData),
+      });
+      if (!response.ok) {
+        throw new Error("Failed to fetch data");
+      }
+      const jsonData = await response.json();
+      setData(jsonData);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+    increaseCartQuantity(location.state?.item.id);
+  }
+
+  async function removingFromCart() {
+    try {
+      const requestData = {
+        userId: userID,
+        productId: location.state?.item.id,
+        quantity: 1,
+      };
+      const headers = {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      };
+      const response = await fetch("http://localhost:3000/cart/remove", {
+        method: "DELETE",
+        headers: headers,
+        body: JSON.stringify(requestData),
+      });
+      if (!response.ok) {
+        throw new Error("Failed to fetch data");
+      }
+      // console.log("response: ", response);
+      const jsonData = await response.json();
+      setData(jsonData);
+    } catch (error) {
+      console.error("Error fetching data: ", error);
+    }
+    removeFromCart(location.state?.item.id);
   }
 
   return (
@@ -86,11 +169,7 @@ export default function Product() {
           />
         ) : (
           <Icon.HeartFill
-            onClick={() => {
-              if (removeFromFavorites) {
-                removeFromFavorites(location.state?.item.id);
-              }
-            }}
+            onClick={removing}
             color="#dc3545"
             size={30}
             style={{
@@ -124,7 +203,8 @@ export default function Product() {
           <Button
             variant="dark"
             style={{ width: "150px", alignSelf: "end", marginTop: "8px" }}
-            onClick={() => increaseCartQuantity(location.state?.item.id)}
+            // onClick={() => increaseCartQuantity(location.state?.item.id)}
+            onClick={addToCart}
           >
             + Add To Cart
           </Button>
@@ -156,7 +236,8 @@ export default function Product() {
             <Button
               variant="danger"
               style={{ width: "150px" }}
-              onClick={() => removeFromCart(location.state?.item.id)}
+              // onClick={() => removeFromCart(location.state?.item.id)}
+              onClick={removingFromCart}
             >
               Remove
             </Button>
