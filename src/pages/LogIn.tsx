@@ -1,15 +1,12 @@
 import { useState } from "react";
 import { Container, Form, Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import { useUserID } from "../context/UserIDContext";
+import Cookies from "js-cookie";
 
 export default function LogIn() {
   const [emailInput, setEmailInput] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-
-  const { userID, setUserID } = useUserID() || {};
-  // console.log("this is userID from context", userID);
 
   function emailHandler(e: React.ChangeEvent<HTMLInputElement>) {
     setEmailInput(e.target.value);
@@ -39,10 +36,8 @@ export default function LogIn() {
     if (response.ok) {
       const data = await response.json();
       const token = data.token;
-      if (setUserID) {
-        setUserID(data.userID);
-        // localStorage.setItem("userID", userID);
-      }
+      const userID = data.userID;
+      Cookies.set("userID", userID, { expires: 1 });
       localStorage.setItem("token", token);
       setEmailInput("");
       setPassword("");
@@ -51,7 +46,6 @@ export default function LogIn() {
       setErrorMessage("email or password is not correct");
     }
   }
-  console.log(userID);
 
   return (
     <div>

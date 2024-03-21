@@ -5,64 +5,17 @@ import { formatCurrency } from "../functions/formatCurrency";
 import * as Icon from "react-bootstrap-icons";
 import { useShoppingCart } from "../context/ShoppingCartContext";
 import { useFavorite } from "../context/FavoriteContext";
-import { useEffect, useState } from "react";
-import { useUserID } from "../context/UserIDContext";
+import { useState } from "react";
+// import { useUserID } from "../context/UserIDContext";
+import Cookies from "js-cookie";
 
 export default function Product() {
-  const { userID } = useUserID() || {};
+  const userID = Cookies.get("userID");
   console.log(userID);
 
   const [data, setData] = useState(null);
-  // const [userId, setUserId] = useState("");
 
   const token = localStorage.getItem("token");
-  // console.log(token);
-
-  // const decodedToken = token ? JSON.parse(atob(token.split(".")[1])) : null;
-  // if (decodedToken) {
-  //   setUserId(decodedToken.userId);
-  // }
-  // console.log(decodedToken);
-
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     try {
-  //       const requestData = {
-  //         userId: "65f6d8d5385977daf5cf053f",
-  //         productId: "1",
-  //       };
-
-  //       const headers = {
-  //         "Content-Type": "application/json",
-  //         Authorization: `Bearer ${token}`,
-  //       };
-
-  //       const response = await fetch("http://localhost:3000/favorites/add", {
-  //         method: "POST",
-  //         headers: headers,
-  //         body: JSON.stringify(requestData),
-  //       });
-
-  //       if (!response.ok) {
-  //         throw new Error("Failed to fetch data");
-  //       }
-
-  //       // const responseData = await response.json();
-
-  //       // setResponseData(responseData);
-
-  //       // Parse JSON response
-  //       const jsonData = await response.json();
-
-  //       // Update state with fetched data
-  //       setData(jsonData);
-  //     } catch (error) {
-  //       console.error("Error fetching data:", error);
-  //     }
-  //   };
-
-  //   fetchData();
-  // }, []);
 
   const location = useLocation();
 
@@ -81,40 +34,8 @@ export default function Product() {
   );
 
   const quantity = getItemQuantity(location.state?.item.id);
-  // console.log(favorites);
-
-  /////////////
-
-  // const token = localStorage.getItem("token");
-  // console.log(token);
-
-  // function adding() {
-  //   if (addToFavorites) {
-  //     addToFavorites(location.state?.item);
-  //   }
-  // }
-
-  // const info = async () => {
-  //   console.log("infoshi");
-  //   try {
-  //     const response = await fetch("http://localhost:3000/favorites/add");
-  //     const jj = await response.json();
-  //     console.log("jj", jj);
-  //   } catch (error) {
-  //     console.log("error: nn", error);
-  //   }
-  // };
-
-  // async function info() {
-  //   const response = await fetch("http://localhost:3000/favorites/getId");
-  //   const data = await response.json();
-  //   console.log(data);
-  // }
-
-  // info();
 
   async function adding() {
-    // info();
     try {
       const requestData = {
         userId: userID,
@@ -135,9 +56,7 @@ export default function Product() {
       console.log("response: ", response);
       const jsonData = await response.json();
 
-      // Update state with fetched data
       setData(jsonData);
-      // console.log(data);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -145,17 +64,6 @@ export default function Product() {
       addToFavorites(location.state?.item);
     }
   }
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  // async function info() {
-  //   try {
-  //     const response = await fetch("http://localhost:3000/favorites/add");
-  //     const data = await response.json();
-  //     console.log(data);
-  //   } catch (error) {
-  //     console.log("errorr", error);
-  //   }
-  // }
 
   return (
     <Container
@@ -168,13 +76,7 @@ export default function Product() {
       <Card style={{ maxWidth: "900px", padding: "40px", textAlign: "right" }}>
         {!isProductInFavorites ? (
           <Icon.Heart
-            // onClick={() => {
-            //   if (addToFavorites) {
-            //     addToFavorites(location.state?.item);
-            //   }
-            // }}
             onClick={adding}
-            // onClick={info}
             color="#dc3545"
             size={30}
             style={{
