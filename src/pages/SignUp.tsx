@@ -39,7 +39,8 @@ export default function SignUp() {
       setPasswordsMatch("password do not match!");
     } else {
       setPasswordsMatch("");
-      const response = await fetch("/auth/signup", {
+      // "/auth/signup"
+      const response = await fetch("/users", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

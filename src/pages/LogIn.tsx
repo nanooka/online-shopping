@@ -25,7 +25,7 @@ export default function LogIn() {
 
     console.log(userInfo);
 
-    const response = await fetch("/auth/login", {
+    const response = await fetch("/users/login", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -35,6 +35,7 @@ export default function LogIn() {
 
     if (response.ok) {
       const data = await response.json();
+      console.log(data);
       const token = data.token;
       const userID = data.userID;
       Cookies.set("userID", userID, { expires: 1 });
