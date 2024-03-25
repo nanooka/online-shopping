@@ -18,6 +18,7 @@ export default function Product() {
   const token = localStorage.getItem("token");
 
   const location = useLocation();
+  console.log(location.state);
 
   const {
     getItemQuantity,
@@ -40,6 +41,12 @@ export default function Product() {
       const requestData = {
         userId: userID,
         productId: location.state?.item.id,
+        image: location.state?.item.image,
+        title: location.state?.item.title,
+        price: location.state?.item.price,
+        rating: location.state?.item.rating,
+        category: location.state?.item.category,
+        description: location.state?.item.description,
       };
       console.log(requestData);
       const headers = {
@@ -65,6 +72,7 @@ export default function Product() {
       addToFavorites(location.state?.item);
     }
   }
+
   async function removing() {
     try {
       const requestData = {
