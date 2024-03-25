@@ -41,11 +41,12 @@ export default function Product() {
         userId: userID,
         productId: location.state?.item.id,
       };
+      console.log(requestData);
       const headers = {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       };
-      const response = await fetch("http://localhost:3000/favorites/add", {
+      const response = await fetch("http://localhost:3000/favorites", {
         method: "POST",
         headers: headers,
         body: JSON.stringify(requestData),
@@ -74,7 +75,7 @@ export default function Product() {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       };
-      const response = await fetch("http://localhost:3000/favorites/remove", {
+      const response = await fetch("http://localhost:3000/favorites/:id", {
         method: "DELETE",
         headers: headers,
         body: JSON.stringify(requestData),
