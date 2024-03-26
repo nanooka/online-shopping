@@ -3,30 +3,33 @@ import { useLocation } from "react-router-dom";
 import { renderStars } from "../functions/renderStars";
 import { formatCurrency } from "../functions/formatCurrency";
 import * as Icon from "react-bootstrap-icons";
-import { useShoppingCart } from "../context/ShoppingCartContext";
+// import { useShoppingCart } from "../context/ShoppingCartContext";
 import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 
 export default function Product() {
   const userID = Cookies.get("userID");
 
-  const [data, setData] = useState(null);
+  // const [data, setData] = useState(null);
   const [isProductInFavorites, setIsProductInFavorites] = useState(false);
+  const [isProductInCart, setIsProductInCart] = useState(null);
+  const [quantity, setQuantiy] = useState(0);
 
   const token = localStorage.getItem("token");
 
   const location = useLocation();
-  console.log(location.state);
+  // console.log("location: ", location.state);
 
-  const {
-    getItemQuantity,
-    increaseCartQuantity,
-    decreaseCartQuantity,
-    removeFromCart,
-  } = useShoppingCart();
+  // const {
+  //   getItemQuantity,
+  //   increaseCartQuantity,
+  //   decreaseCartQuantity,
+  //   removeFromCart,
+  // } = useShoppingCart();
 
-  const quantity = getItemQuantity(location.state?.item.id);
+  // const quantity = getItemQuantity(location.state?.item.id);
 
+  // get user's favorites list and cart
   useEffect(() => {
     async function getFavoriteProducts() {
       try {
@@ -59,9 +62,47 @@ export default function Product() {
       }
     }
     getFavoriteProducts();
-  }, []);
+    async function getCartProducts() {
+      try {
+        const requestData = {
+          userId: userID,
+        };
+        const headers = {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        };
+        const response = await fetch("http://localhost:3000/cart/userCart", {
+          method: "POST",
+          headers: headers,
+          body: JSON.stringify(requestData),
+        });
+        if (!response.ok) {
+          throw new Error("Failed to fetch favorite products");
+        }
+        const cartProducts = await response.json();
+        const productIsInCart = cartProducts.some(
+          (product) => product.id === location.state?.item.id
+        );
 
-  async function adding() {
+        const quantity =
+          cartProducts.find((product) => product.id === location.state?.item.id)
+            ?.quantity || 0;
+
+        console.log("productIsInCart: ", productIsInCart);
+        setIsProductInCart(productIsInCart);
+        setQuantiy(quantity);
+        console.log("cartProducts:", cartProducts);
+        console.log("quantity: ", quantity);
+      } catch (err) {
+        console.log(err);
+      }
+    }
+    getCartProducts();
+  }, []);
+  console.log("isProductInCart", isProductInCart);
+
+  // add product to favorites
+  async function addToFavorites() {
     try {
       const requestData = {
         userId: userID,
@@ -87,16 +128,19 @@ export default function Product() {
         throw new Error("Failed to fetch data");
       }
       // console.log("response: ", response);
-      const jsonData = await response.json();
+      // const jsonData = await response.json();
 
-      setData(jsonData);
+      // setData(jsonData);
+      // console.log("data: ", data);
+      // console.log("jsonData: ", jsonData);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
     setIsProductInFavorites(true);
   }
 
-  async function removing() {
+  // remove product from favorites
+  async function removeFromFavorites() {
     try {
       const requestData = {
         userId: userID,
@@ -115,27 +159,33 @@ export default function Product() {
         throw new Error("Failed to fetch data");
       }
       // console.log("response: ", response);
-      const jsonData = await response.json();
-      setData(jsonData);
+      // const jsonData = await response.json();
+      // setData(jsonData);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
     setIsProductInFavorites(false);
   }
-  console.log(isProductInFavorites);
+  // console.log(isProductInFavorites);
 
   async function addToCart() {
     try {
       const requestData = {
         userId: userID,
-        productId: location.state?.item.id,
+        id: location.state?.item.id,
+        image: location.state?.item.image,
+        title: location.state?.item.title,
+        price: location.state?.item.price,
+        rating: location.state?.item.rating,
+        category: location.state?.item.category,
+        description: location.state?.item.description,
         quantity: 1,
       };
       const headers = {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       };
-      const response = await fetch("http://localhost:3000/cart/add", {
+      const response = await fetch("http://localhost:3000/cart", {
         method: "POST",
         headers: headers,
         body: JSON.stringify(requestData),
@@ -143,26 +193,35 @@ export default function Product() {
       if (!response.ok) {
         throw new Error("Failed to fetch data");
       }
-      const jsonData = await response.json();
-      setData(jsonData);
+      // const responseData = await response.json();
+      // console.log("responseData: ", responseData);
+      // setQuantiy(responseData.quantity);
+      setQuantiy(quantity + 1);
+      console.log("quantity: ", quantity);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
-    increaseCartQuantity(location.state?.item.id);
+    // increaseCartQuantity(location.state?.item.id);
   }
 
   async function removingFromCart() {
     try {
       const requestData = {
         userId: userID,
-        productId: location.state?.item.id,
+        id: location.state?.item.id,
+        image: location.state?.item.image,
+        title: location.state?.item.title,
+        price: location.state?.item.price,
+        rating: location.state?.item.rating,
+        category: location.state?.item.category,
+        description: location.state?.item.description,
         quantity: 1,
       };
       const headers = {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       };
-      const response = await fetch("http://localhost:3000/cart/remove", {
+      const response = await fetch("http://localhost:3000/cart/:id", {
         method: "DELETE",
         headers: headers,
         body: JSON.stringify(requestData),
@@ -171,12 +230,48 @@ export default function Product() {
         throw new Error("Failed to fetch data");
       }
       // console.log("response: ", response);
-      const jsonData = await response.json();
-      setData(jsonData);
+      // const jsonData = await response.json();
+      // setData(jsonData);
     } catch (error) {
       console.error("Error fetching data: ", error);
     }
-    removeFromCart(location.state?.item.id);
+    setQuantiy(0);
+    // removeFromCart(location.state?.item.id);
+  }
+
+  // decrease quantity by 1 for "-" button
+  async function decreaseProductQuantityInCart() {
+    try {
+      const requestData = {
+        userId: userID,
+        id: location.state?.item.id,
+        image: location.state?.item.image,
+        title: location.state?.item.title,
+        price: location.state?.item.price,
+        rating: location.state?.item.rating,
+        category: location.state?.item.category,
+        description: location.state?.item.description,
+        quantity: 1,
+      };
+      const headers = {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      };
+      const response = await fetch("http://localhost:3000/cart/:id", {
+        method: "PATCH",
+        headers: headers,
+        body: JSON.stringify(requestData),
+      });
+      if (!response.ok) {
+        throw new Error("Failed to fetch data");
+      }
+      // console.log("response: ", response);
+      // const jsonData = await response.json();
+      // setData(jsonData);
+      setQuantiy(quantity - 1);
+    } catch (error) {
+      console.error("Error fetching data: ", error);
+    }
   }
 
   return (
@@ -190,7 +285,7 @@ export default function Product() {
       <Card style={{ maxWidth: "900px", padding: "40px", textAlign: "right" }}>
         {!isProductInFavorites ? (
           <Icon.Heart
-            onClick={adding}
+            onClick={addToFavorites}
             color="#dc3545"
             size={30}
             style={{
@@ -200,7 +295,7 @@ export default function Product() {
           />
         ) : (
           <Icon.HeartFill
-            onClick={removing}
+            onClick={removeFromFavorites}
             color="#dc3545"
             size={30}
             style={{
@@ -250,7 +345,8 @@ export default function Product() {
             >
               <Button
                 variant="dark"
-                onClick={() => decreaseCartQuantity(location.state?.item.id)}
+                // onClick={() => decreaseCartQuantity(location.state?.item.id)}
+                onClick={decreaseProductQuantityInCart}
               >
                 -
               </Button>
@@ -259,7 +355,8 @@ export default function Product() {
               </div>
               <Button
                 variant="dark"
-                onClick={() => increaseCartQuantity(location.state?.item.id)}
+                // onClick={() => increaseCartQuantity(location.state?.item.id)}
+                onClick={addToCart}
               >
                 +
               </Button>
