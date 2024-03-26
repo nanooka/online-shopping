@@ -34,10 +34,21 @@ import { Col, Container, Row } from "react-bootstrap";
 import Cookies from "js-cookie";
 import { useEffect, useState } from "react";
 
+interface ProductType {
+  userId: string;
+  id: number;
+  image: string;
+  title: string;
+  price: number;
+  rating: { rate: number; count: number };
+  category: string;
+  description: string;
+}
+
 export default function Favorites() {
   const userID = Cookies.get("userID");
   const token = localStorage.getItem("token");
-  const [userFavorites, setUserFavorites] = useState([]);
+  const [userFavorites, setUserFavorites] = useState<Array<ProductType>>([]);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -82,10 +93,8 @@ export default function Favorites() {
           <Row xs={1} md={2} lg={3} className="g-5">
             {userFavorites.map((item) => (
               <Col
-                key={item.productId}
-                onClick={() =>
-                  navigate(`/${item.ProductId}`, { state: { item } })
-                }
+                key={item.id}
+                onClick={() => navigate(`/${item.id}`, { state: { item } })}
               >
                 <StoreProduct {...item} />
               </Col>

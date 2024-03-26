@@ -4,16 +4,14 @@ import { renderStars } from "../functions/renderStars";
 import { formatCurrency } from "../functions/formatCurrency";
 import * as Icon from "react-bootstrap-icons";
 import { useShoppingCart } from "../context/ShoppingCartContext";
-import { useFavorite } from "../context/FavoriteContext";
-import { useState } from "react";
-// import { useUserID } from "../context/UserIDContext";
+import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 
 export default function Product() {
   const userID = Cookies.get("userID");
-  // console.log(userID);
 
   const [data, setData] = useState(null);
+  const [isProductInFavorites, setIsProductInFavorites] = useState(false);
 
   const token = localStorage.getItem("token");
 
@@ -27,20 +25,47 @@ export default function Product() {
     removeFromCart,
   } = useShoppingCart();
 
-  const { addToFavorites, removeFromFavorites, favorites } =
-    useFavorite() || {};
-
-  const isProductInFavorites = favorites?.some(
-    (favorite) => favorite.id === location.state?.item.id
-  );
-
   const quantity = getItemQuantity(location.state?.item.id);
+
+  useEffect(() => {
+    async function getFavoriteProducts() {
+      try {
+        const requestData = {
+          userId: userID,
+        };
+        const headers = {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        };
+        const response = await fetch(
+          "http://localhost:3000/favorites/userFavorites",
+          {
+            method: "POST",
+            headers: headers,
+            body: JSON.stringify(requestData),
+          }
+        );
+        if (!response.ok) {
+          throw new Error("Failed to fetch favorite products");
+        }
+        const favoriteProducts = await response.json();
+        const isFavorite = favoriteProducts.some(
+          (favorite) => favorite.id === location.state?.item.id
+        );
+        setIsProductInFavorites(isFavorite);
+        console.log(favoriteProducts);
+      } catch (err) {
+        console.log(err);
+      }
+    }
+    getFavoriteProducts();
+  }, []);
 
   async function adding() {
     try {
       const requestData = {
         userId: userID,
-        productId: location.state?.item.id,
+        id: location.state?.item.id,
         image: location.state?.item.image,
         title: location.state?.item.title,
         price: location.state?.item.price,
@@ -68,16 +93,14 @@ export default function Product() {
     } catch (error) {
       console.error("Error fetching data:", error);
     }
-    if (addToFavorites) {
-      addToFavorites(location.state?.item);
-    }
+    setIsProductInFavorites(true);
   }
 
   async function removing() {
     try {
       const requestData = {
         userId: userID,
-        productId: location.state?.item.id,
+        id: location.state?.item.id,
       };
       const headers = {
         "Content-Type": "application/json",
@@ -97,10 +120,9 @@ export default function Product() {
     } catch (error) {
       console.error("Error fetching data:", error);
     }
-    if (removeFromFavorites) {
-      removeFromFavorites(location.state?.item.id);
-    }
+    setIsProductInFavorites(false);
   }
+  console.log(isProductInFavorites);
 
   async function addToCart() {
     try {
