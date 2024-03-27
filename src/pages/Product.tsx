@@ -3,14 +3,12 @@ import { useLocation } from "react-router-dom";
 import { renderStars } from "../functions/renderStars";
 import { formatCurrency } from "../functions/formatCurrency";
 import * as Icon from "react-bootstrap-icons";
-// import { useShoppingCart } from "../context/ShoppingCartContext";
 import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 
 export default function Product() {
   const userID = Cookies.get("userID");
 
-  // const [data, setData] = useState(null);
   const [isProductInFavorites, setIsProductInFavorites] = useState(false);
   const [isProductInCart, setIsProductInCart] = useState(null);
   const [quantity, setQuantiy] = useState(0);
@@ -18,16 +16,6 @@ export default function Product() {
   const token = localStorage.getItem("token");
 
   const location = useLocation();
-  // console.log("location: ", location.state);
-
-  // const {
-  //   getItemQuantity,
-  //   increaseCartQuantity,
-  //   decreaseCartQuantity,
-  //   removeFromCart,
-  // } = useShoppingCart();
-
-  // const quantity = getItemQuantity(location.state?.item.id);
 
   // get user's favorites list and cart
   useEffect(() => {
@@ -127,12 +115,6 @@ export default function Product() {
       if (!response.ok) {
         throw new Error("Failed to fetch data");
       }
-      // console.log("response: ", response);
-      // const jsonData = await response.json();
-
-      // setData(jsonData);
-      // console.log("data: ", data);
-      // console.log("jsonData: ", jsonData);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -158,16 +140,13 @@ export default function Product() {
       if (!response.ok) {
         throw new Error("Failed to fetch data");
       }
-      // console.log("response: ", response);
-      // const jsonData = await response.json();
-      // setData(jsonData);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
     setIsProductInFavorites(false);
   }
-  // console.log(isProductInFavorites);
 
+  // add product to cart
   async function addToCart() {
     try {
       const requestData = {
@@ -193,17 +172,14 @@ export default function Product() {
       if (!response.ok) {
         throw new Error("Failed to fetch data");
       }
-      // const responseData = await response.json();
-      // console.log("responseData: ", responseData);
-      // setQuantiy(responseData.quantity);
       setQuantiy(quantity + 1);
       console.log("quantity: ", quantity);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
-    // increaseCartQuantity(location.state?.item.id);
   }
 
+  // remove product from cart
   async function removingFromCart() {
     try {
       const requestData = {
@@ -229,14 +205,10 @@ export default function Product() {
       if (!response.ok) {
         throw new Error("Failed to fetch data");
       }
-      // console.log("response: ", response);
-      // const jsonData = await response.json();
-      // setData(jsonData);
     } catch (error) {
       console.error("Error fetching data: ", error);
     }
     setQuantiy(0);
-    // removeFromCart(location.state?.item.id);
   }
 
   // decrease quantity by 1 for "-" button
@@ -265,9 +237,6 @@ export default function Product() {
       if (!response.ok) {
         throw new Error("Failed to fetch data");
       }
-      // console.log("response: ", response);
-      // const jsonData = await response.json();
-      // setData(jsonData);
       setQuantiy(quantity - 1);
     } catch (error) {
       console.error("Error fetching data: ", error);
@@ -329,7 +298,6 @@ export default function Product() {
           <Button
             variant="dark"
             style={{ width: "150px", alignSelf: "end", marginTop: "8px" }}
-            // onClick={() => increaseCartQuantity(location.state?.item.id)}
             onClick={addToCart}
           >
             + Add To Cart
@@ -343,28 +311,19 @@ export default function Product() {
               className="d-flex align-items-center justify-content-center"
               style={{ gap: ".5rem" }}
             >
-              <Button
-                variant="dark"
-                // onClick={() => decreaseCartQuantity(location.state?.item.id)}
-                onClick={decreaseProductQuantityInCart}
-              >
+              <Button variant="dark" onClick={decreaseProductQuantityInCart}>
                 -
               </Button>
               <div>
                 <span className="fs-3">{quantity}</span> in cart
               </div>
-              <Button
-                variant="dark"
-                // onClick={() => increaseCartQuantity(location.state?.item.id)}
-                onClick={addToCart}
-              >
+              <Button variant="dark" onClick={addToCart}>
                 +
               </Button>
             </div>
             <Button
               variant="danger"
               style={{ width: "150px" }}
-              // onClick={() => removeFromCart(location.state?.item.id)}
               onClick={removingFromCart}
             >
               Remove

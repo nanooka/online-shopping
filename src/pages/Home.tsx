@@ -46,7 +46,7 @@ export default function Home(search: { search: string }) {
   }, [list, startNumber]);
 
   const navigate = useNavigate();
-  console.log(printedList);
+  // console.log(printedList);
 
   return (
     <InfiniteScroll
