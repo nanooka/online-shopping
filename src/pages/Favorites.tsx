@@ -56,7 +56,7 @@ export default function Favorites() {
     <Container style={{ marginTop: "10em", marginBottom: "50px" }}>
       <div>
         <h1>Favorite Products</h1>
-        {userFavorites.length === 0 ? (
+        {userFavorites.length === 0 || (!token && !userID) ? (
           <p>No favorite products yet.</p>
         ) : (
           <Row xs={1} md={2} lg={3} className="g-5">
@@ -71,7 +71,7 @@ export default function Favorites() {
           </Row>
         )}
       </div>
-      {!token && !userID && <p> No favorite products yet</p>}
+      {/* {!token && !userID && <p> No favorite products yet</p>} */}
     </Container>
   );
 }

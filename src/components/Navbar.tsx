@@ -7,11 +7,10 @@ import {
   Button,
   Offcanvas,
   Stack,
+  NavDropdown,
 } from "react-bootstrap";
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import * as Icon from "react-bootstrap-icons";
-// import { useState } from "react";
-// import { useShoppingCart } from "../context/ShoppingCartContext";
 import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import { formatCurrency } from "../functions/formatCurrency";
@@ -32,15 +31,68 @@ interface cartProductsType {
   quantity: number;
 }
 
+async function removeFromCart(
+  productId: number,
+  userID: string | undefined,
+  token: string | null,
+  setCartProducts: React.Dispatch<React.SetStateAction<cartProductsType[]>>
+) {
+  try {
+    const requestData = {
+      userId: userID,
+      id: productId,
+    };
+    const headers = {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    };
+    const response = await fetch(`http://localhost:3000/cart/${productId}`, {
+      method: "DELETE",
+      headers: headers,
+      body: JSON.stringify(requestData),
+    });
+    if (!response.ok) {
+      throw new Error("Failed to remove product from cart");
+    }
+    // Remove the product from cartProducts state
+    setCartProducts((prevCartProducts) =>
+      prevCartProducts.filter((item) => item.id !== productId)
+    );
+  } catch (error) {
+    console.error("Error removing product from cart: ", error);
+  }
+}
+
 export default function Navbar({ search, setSearch }: SearchType) {
   const userID = Cookies.get("userID");
   const token = localStorage.getItem("token");
+  const [userEmail, setUserEmail] = useState("");
   const [cartProducts, setCartProducts] = useState<Array<cartProductsType>>([]);
-  // const { openCart, cartQuantity } = useShoppingCart();
   const [isOpen, setIsOpen] = useState(false);
+  const navigate = useNavigate();
 
   const openCart = () => setIsOpen(true);
   const closeCart = () => setIsOpen(false);
+
+  function handleLogout() {
+    Cookies.remove("userID");
+    localStorage.removeItem("token");
+    setUserEmail("");
+    setCartProducts([]);
+    navigate("/");
+  }
+
+  useEffect(() => {
+    if (userID && !userEmail) {
+      fetch(`http://localhost:3000/users/${userID}`)
+        .then((res) => res.json())
+        .then((data) => {
+          setUserEmail(data.email);
+        })
+        .catch((error) => console.error("Error fetching user data:", error));
+    }
+  }, [userID, userEmail]);
+  console.log(userEmail);
 
   useEffect(() => {
     async function getCartProducts() {
@@ -67,40 +119,10 @@ export default function Navbar({ search, setSearch }: SearchType) {
       }
     }
     getCartProducts();
-  }, [removeFromCart]);
-
-  // useEffect(() => {
-  //   console.log("cartProducts:", cartProducts);
-  // }, [cartProducts]);
+  }, [userID, token]);
 
   function handleSearch(e: React.ChangeEvent<HTMLInputElement>) {
     setSearch(e.target.value);
-  }
-  async function removeFromCart(productId: number) {
-    try {
-      const requestData = {
-        userId: userID,
-        id: productId,
-      };
-      const headers = {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      };
-      const response = await fetch(`http://localhost:3000/cart/${productId}`, {
-        method: "DELETE",
-        headers: headers,
-        body: JSON.stringify(requestData),
-      });
-      if (!response.ok) {
-        throw new Error("Failed to remove product from cart");
-      }
-      // Remove the product from cartProducts state
-      setCartProducts((prevCartProducts) =>
-        prevCartProducts.filter((item) => item.id !== productId)
-      );
-    } catch (error) {
-      console.error("Error removing product from cart: ", error);
-    }
   }
 
   return (
@@ -188,9 +210,17 @@ export default function Navbar({ search, setSearch }: SearchType) {
               }}
             />
           </Link>
-          <Nav.Link to="/login" as={NavLink} className="d-none d-lg-block">
-            Log In
-          </Nav.Link>
+          {!token ? (
+            <Nav.Link to="/login" as={NavLink} className="d-none d-lg-block">
+              Log In
+            </Nav.Link>
+          ) : (
+            <NavDropdown title={userEmail} id="navbarScrollingDropdown">
+              <NavDropdown.Item onClick={handleLogout}>
+                Log out
+              </NavDropdown.Item>
+            </NavDropdown>
+          )}
         </Nav>
       </Container>
       <Offcanvas show={isOpen} onHide={closeCart} placement="end">
@@ -230,7 +260,9 @@ export default function Navbar({ search, setSearch }: SearchType) {
                 <Button
                   variant="outline-danger"
                   size="sm"
-                  onClick={() => removeFromCart(product.id)}
+                  onClick={() =>
+                    removeFromCart(product.id, userID, token, setCartProducts)
+                  }
                 >
                   &times;
                 </Button>
