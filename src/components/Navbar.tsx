@@ -92,10 +92,11 @@ export default function Navbar({ search, setSearch }: SearchType) {
         .catch((error) => console.error("Error fetching user data:", error));
     }
   }, [userID, userEmail]);
-  console.log(userEmail);
+  // console.log(userEmail);
 
   useEffect(() => {
     async function getCartProducts() {
+      if (!token && !userID) return;
       try {
         const requestData = {
           userId: userID,
@@ -119,7 +120,7 @@ export default function Navbar({ search, setSearch }: SearchType) {
       }
     }
     getCartProducts();
-  }, [userID, token]);
+  }, []);
 
   function handleSearch(e: React.ChangeEvent<HTMLInputElement>) {
     setSearch(e.target.value);
@@ -193,9 +194,9 @@ export default function Navbar({ search, setSearch }: SearchType) {
               }}
             >
               {cartProducts.reduce((total, cartProduct) => {
-                const product = cartProducts.find(
-                  (i) => i.quantity === cartProduct.quantity
-                );
+                // const product = cartProducts.find(
+                //   (i) => i.quantity === cartProduct.quantity
+                // );
                 return total + cartProduct.quantity;
               }, 0)}
             </div>
@@ -272,10 +273,12 @@ export default function Navbar({ search, setSearch }: SearchType) {
               Total:{" "}
               {formatCurrency(
                 cartProducts.reduce((total, cartProduct) => {
-                  const product = cartProducts.find(
-                    (i) => i.id === cartProduct.id
+                  // const product = cartProducts.find(
+                  //   (i) => i.id === cartProduct.id
+                  // );
+                  return (
+                    total + (cartProduct.price || 0) * cartProduct.quantity
                   );
-                  return total + (product.price || 0) * cartProduct.quantity;
                 }, 0)
               )}
             </div>

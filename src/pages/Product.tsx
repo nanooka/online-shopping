@@ -1,5 +1,5 @@
 import { Card, Container, Row, Col, Button } from "react-bootstrap";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { renderStars } from "../functions/renderStars";
 import { formatCurrency } from "../functions/formatCurrency";
 import * as Icon from "react-bootstrap-icons";
@@ -15,11 +15,13 @@ export default function Product() {
 
   const token = localStorage.getItem("token");
 
+  const navigate = useNavigate();
   const location = useLocation();
 
-  // get user's favorites list and cart
+  // get user's favorites list
   useEffect(() => {
     async function getFavoriteProducts() {
+      if (!token && !userID) return;
       try {
         const requestData = {
           userId: userID,
@@ -50,7 +52,12 @@ export default function Product() {
       }
     }
     getFavoriteProducts();
+  }, [isProductInFavorites, location.state?.item.id, token, userID]);
+
+  // get user's cart
+  useEffect(() => {
     async function getCartProducts() {
+      if (!token && !userID) return;
       try {
         const requestData = {
           userId: userID,
@@ -86,39 +93,43 @@ export default function Product() {
       }
     }
     getCartProducts();
-  }, []);
+  }, [isProductInCart, quantity, location.state?.item.id, token, userID]);
   console.log("isProductInCart", isProductInCart);
 
   // add product to favorites
   async function addToFavorites() {
-    try {
-      const requestData = {
-        userId: userID,
-        id: location.state?.item.id,
-        image: location.state?.item.image,
-        title: location.state?.item.title,
-        price: location.state?.item.price,
-        rating: location.state?.item.rating,
-        category: location.state?.item.category,
-        description: location.state?.item.description,
-      };
-      console.log(requestData);
-      const headers = {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      };
-      const response = await fetch("http://localhost:3000/favorites", {
-        method: "POST",
-        headers: headers,
-        body: JSON.stringify(requestData),
-      });
-      if (!response.ok) {
-        throw new Error("Failed to fetch data");
+    if (!token && !userID) {
+      navigate("/login");
+    } else {
+      try {
+        const requestData = {
+          userId: userID,
+          id: location.state?.item.id,
+          image: location.state?.item.image,
+          title: location.state?.item.title,
+          price: location.state?.item.price,
+          rating: location.state?.item.rating,
+          category: location.state?.item.category,
+          description: location.state?.item.description,
+        };
+        console.log(requestData);
+        const headers = {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        };
+        const response = await fetch("http://localhost:3000/favorites", {
+          method: "POST",
+          headers: headers,
+          body: JSON.stringify(requestData),
+        });
+        if (!response.ok) {
+          throw new Error("Failed to fetch data");
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
       }
-    } catch (error) {
-      console.error("Error fetching data:", error);
+      setIsProductInFavorites(true);
     }
-    setIsProductInFavorites(true);
   }
 
   // remove product from favorites
@@ -148,34 +159,38 @@ export default function Product() {
 
   // add product to cart
   async function addToCart() {
-    try {
-      const requestData = {
-        userId: userID,
-        id: location.state?.item.id,
-        image: location.state?.item.image,
-        title: location.state?.item.title,
-        price: location.state?.item.price,
-        rating: location.state?.item.rating,
-        category: location.state?.item.category,
-        description: location.state?.item.description,
-        quantity: 1,
-      };
-      const headers = {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      };
-      const response = await fetch("http://localhost:3000/cart", {
-        method: "POST",
-        headers: headers,
-        body: JSON.stringify(requestData),
-      });
-      if (!response.ok) {
-        throw new Error("Failed to fetch data");
+    if (!token && !userID) {
+      navigate("/login");
+    } else {
+      try {
+        const requestData = {
+          userId: userID,
+          id: location.state?.item.id,
+          image: location.state?.item.image,
+          title: location.state?.item.title,
+          price: location.state?.item.price,
+          rating: location.state?.item.rating,
+          category: location.state?.item.category,
+          description: location.state?.item.description,
+          quantity: 1,
+        };
+        const headers = {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        };
+        const response = await fetch("http://localhost:3000/cart", {
+          method: "POST",
+          headers: headers,
+          body: JSON.stringify(requestData),
+        });
+        if (!response.ok) {
+          throw new Error("Failed to fetch data");
+        }
+        setQuantiy(quantity + 1);
+        console.log("quantity: ", quantity);
+      } catch (error) {
+        console.error("Error fetching data:", error);
       }
-      setQuantiy(quantity + 1);
-      console.log("quantity: ", quantity);
-    } catch (error) {
-      console.error("Error fetching data:", error);
     }
   }
 

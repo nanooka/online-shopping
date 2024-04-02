@@ -1,7 +1,7 @@
 // import { useEffect, useState } from "react";
 import { useState } from "react";
 import { Container, Form, Button } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function SignUp() {
   // const [backendData, setBackendData] = useState([{}]);
@@ -10,6 +10,7 @@ export default function SignUp() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [passwordsMatch, setPasswordsMatch] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const navigate = useNavigate();
 
   function emailHandler(e: React.ChangeEvent<HTMLInputElement>) {
     setEmailInput(e.target.value);
@@ -55,6 +56,7 @@ export default function SignUp() {
         setPassword("");
         setConfirmPassword("");
         setErrorMessage("");
+        navigate("/login");
       }
     }
   }
