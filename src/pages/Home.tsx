@@ -4,7 +4,6 @@ import StoreProduct from "../components/StoreProduct";
 import { useNavigate } from "react-router-dom";
 import SelectCategory from "../components/SelectCategory";
 import InfiniteScroll from "react-infinite-scroll-component";
-
 export interface ProductType {
   image: string;
   title: string;

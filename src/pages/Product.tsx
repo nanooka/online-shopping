@@ -5,18 +5,34 @@ import { formatCurrency } from "../functions/formatCurrency";
 import * as Icon from "react-bootstrap-icons";
 import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
+import { useCart } from "../context/CartContext";
 
 export default function Product() {
   const userID = Cookies.get("userID");
 
   const [isProductInFavorites, setIsProductInFavorites] = useState(false);
-  const [isProductInCart, setIsProductInCart] = useState(null);
+  const [isProductInCart, setIsProductInCart] = useState(false);
   const [quantity, setQuantiy] = useState(0);
 
   const token = localStorage.getItem("token");
 
   const navigate = useNavigate();
   const location = useLocation();
+
+  const { cartProducts, setCartProducts, getCartProducts } = useCart();
+  console.log("from context", cartProducts);
+
+  useEffect(() => {
+    const productIsInCart = cartProducts.some(
+      (product) => product.id === location.state?.item.id
+    );
+    const quantity =
+      cartProducts.find((product) => product.id === location.state?.item.id)
+        ?.quantity || 0;
+    setIsProductInCart(productIsInCart);
+    setQuantiy(quantity);
+    console.log("isProductInCart", isProductInCart);
+  }, []);
 
   // get user's favorites list
   useEffect(() => {
@@ -55,46 +71,46 @@ export default function Product() {
   }, [isProductInFavorites, location.state?.item.id, token, userID]);
 
   // get user's cart
-  useEffect(() => {
-    async function getCartProducts() {
-      if (!token && !userID) return;
-      try {
-        const requestData = {
-          userId: userID,
-        };
-        const headers = {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        };
-        const response = await fetch("http://localhost:3000/cart/userCart", {
-          method: "POST",
-          headers: headers,
-          body: JSON.stringify(requestData),
-        });
-        if (!response.ok) {
-          throw new Error("Failed to fetch favorite products");
-        }
-        const cartProducts = await response.json();
-        const productIsInCart = cartProducts.some(
-          (product) => product.id === location.state?.item.id
-        );
+  // useEffect(() => {
+  //   async function getCartProducts() {
+  //     if (!token && !userID) return;
+  //     try {
+  //       const requestData = {
+  //         userId: userID,
+  //       };
+  //       const headers = {
+  //         "Content-Type": "application/json",
+  //         Authorization: `Bearer ${token}`,
+  //       };
+  //       const response = await fetch("http://localhost:3000/cart/userCart", {
+  //         method: "POST",
+  //         headers: headers,
+  //         body: JSON.stringify(requestData),
+  //       });
+  //       if (!response.ok) {
+  //         throw new Error("Failed to fetch favorite products");
+  //       }
+  //       const cartProducts = await response.json();
+  //       const productIsInCart = cartProducts.some(
+  //         (product) => product.id === location.state?.item.id
+  //       );
 
-        const quantity =
-          cartProducts.find((product) => product.id === location.state?.item.id)
-            ?.quantity || 0;
+  //       const quantity =
+  //         cartProducts.find((product) => product.id === location.state?.item.id)
+  //           ?.quantity || 0;
 
-        console.log("productIsInCart: ", productIsInCart);
-        setIsProductInCart(productIsInCart);
-        setQuantiy(quantity);
-        console.log("cartProducts:", cartProducts);
-        console.log("quantity: ", quantity);
-      } catch (err) {
-        console.log(err);
-      }
-    }
-    getCartProducts();
-  }, [isProductInCart, quantity, location.state?.item.id, token, userID]);
-  console.log("isProductInCart", isProductInCart);
+  //       console.log("productIsInCart: ", productIsInCart);
+  //       setIsProductInCart(productIsInCart);
+  //       setQuantiy(quantity);
+  //       console.log("cartProducts:", cartProducts);
+  //       console.log("quantity: ", quantity);
+  //     } catch (err) {
+  //       console.log(err);
+  //     }
+  //   }
+  //   getCartProducts();
+  // }, [isProductInCart, quantity, location.state?.item.id, token, userID]);
+  // console.log("isProductInCart", isProductInCart);
 
   // add product to favorites
   async function addToFavorites() {
@@ -188,6 +204,7 @@ export default function Product() {
         }
         setQuantiy(quantity + 1);
         console.log("quantity: ", quantity);
+        getCartProducts(userID, token);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -224,7 +241,9 @@ export default function Product() {
       console.error("Error fetching data: ", error);
     }
     setQuantiy(0);
+    getCartProducts(userID, token);
   }
+  console.log(quantity);
 
   // decrease quantity by 1 for "-" button
   async function decreaseProductQuantityInCart() {
@@ -253,6 +272,7 @@ export default function Product() {
         throw new Error("Failed to fetch data");
       }
       setQuantiy(quantity - 1);
+      getCartProducts(userID, token);
     } catch (error) {
       console.error("Error fetching data: ", error);
     }

@@ -14,6 +14,7 @@ import * as Icon from "react-bootstrap-icons";
 import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import { formatCurrency } from "../functions/formatCurrency";
+import { useCart } from "../context/CartContext";
 
 interface SearchType {
   search: string;
@@ -67,12 +68,15 @@ export default function Navbar({ search, setSearch }: SearchType) {
   const userID = Cookies.get("userID");
   const token = localStorage.getItem("token");
   const [userEmail, setUserEmail] = useState("");
-  const [cartProducts, setCartProducts] = useState<Array<cartProductsType>>([]);
+  // const [cartProducts, setCartProducts] = useState<Array<cartProductsType>>([]);
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
 
   const openCart = () => setIsOpen(true);
   const closeCart = () => setIsOpen(false);
+
+  const { cartProducts, setCartProducts } = useCart();
+  // console.log("from context", cartProducts);
 
   function handleLogout() {
     Cookies.remove("userID");
@@ -94,33 +98,33 @@ export default function Navbar({ search, setSearch }: SearchType) {
   }, [userID, userEmail]);
   // console.log(userEmail);
 
-  useEffect(() => {
-    async function getCartProducts() {
-      if (!token && !userID) return;
-      try {
-        const requestData = {
-          userId: userID,
-        };
-        const headers = {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        };
-        const response = await fetch("http://localhost:3000/cart/userCart", {
-          method: "POST",
-          headers: headers,
-          body: JSON.stringify(requestData),
-        });
-        if (!response.ok) {
-          throw new Error("Failed to fetch favorite products");
-        }
-        const cartItems = await response.json();
-        setCartProducts(cartItems);
-      } catch (err) {
-        console.log(err);
-      }
-    }
-    getCartProducts();
-  }, []);
+  // useEffect(() => {
+  //   async function getCartProducts() {
+  //     if (!token && !userID) return;
+  //     try {
+  //       const requestData = {
+  //         userId: userID,
+  //       };
+  //       const headers = {
+  //         "Content-Type": "application/json",
+  //         Authorization: `Bearer ${token}`,
+  //       };
+  //       const response = await fetch("http://localhost:3000/cart/userCart", {
+  //         method: "POST",
+  //         headers: headers,
+  //         body: JSON.stringify(requestData),
+  //       });
+  //       if (!response.ok) {
+  //         throw new Error("Failed to fetch favorite products");
+  //       }
+  //       // const cartItems = await response.json();
+  //       // setCartProducts(cartItems);
+  //     } catch (err) {
+  //       console.log(err);
+  //     }
+  //   }
+  //   getCartProducts();
+  // }, []);
 
   function handleSearch(e: React.ChangeEvent<HTMLInputElement>) {
     setSearch(e.target.value);
