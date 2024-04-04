@@ -1,10 +1,8 @@
-// import { useEffect, useState } from "react";
 import { useState } from "react";
 import { Container, Form, Button } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 
 export default function SignUp() {
-  // const [backendData, setBackendData] = useState([{}]);
   const [emailInput, setEmailInput] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -29,18 +27,15 @@ export default function SignUp() {
     const userInfo = {
       email: emailInput,
       password: password,
-      // confirmPassword: confirmPassword,
     };
 
     console.log(userInfo);
-    // return userInfo;
     if (confirmPassword === "") {
       setPasswordsMatch("please confirm password");
     } else if (password !== confirmPassword) {
       setPasswordsMatch("password do not match!");
     } else {
       setPasswordsMatch("");
-      // "/auth/signup"
       const response = await fetch("/users", {
         method: "POST",
         headers: {

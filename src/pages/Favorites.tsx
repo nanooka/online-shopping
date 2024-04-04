@@ -3,17 +3,7 @@ import StoreProduct from "../components/StoreProduct";
 import { Col, Container, Row } from "react-bootstrap";
 import Cookies from "js-cookie";
 import { useEffect, useState } from "react";
-
-interface ProductType {
-  userId: string;
-  id: number;
-  image: string;
-  title: string;
-  price: number;
-  rating: { rate: number; count: number };
-  category: string;
-  description: string;
-}
+import { ProductType } from "./Home";
 
 export default function Favorites() {
   const userID = Cookies.get("userID");
@@ -49,14 +39,14 @@ export default function Favorites() {
       }
     }
     getFavoriteProducts();
-  }, []);
+  }, [token, userID]);
   console.log(userFavorites);
 
   return (
     <Container style={{ marginTop: "10em", marginBottom: "50px" }}>
       <div>
         <h1>Favorite Products</h1>
-        {userFavorites.length === 0 || (!token && !userID) ? (
+        {userFavorites.length === 0 || !token || !userID ? (
           <p>No favorite products yet.</p>
         ) : (
           <Row xs={1} md={2} lg={3} className="g-5">
@@ -71,7 +61,6 @@ export default function Favorites() {
           </Row>
         )}
       </div>
-      {/* {!token && !userID && <p> No favorite products yet</p>} */}
     </Container>
   );
 }

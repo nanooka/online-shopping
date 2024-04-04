@@ -14,29 +14,18 @@ import * as Icon from "react-bootstrap-icons";
 import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import { formatCurrency } from "../functions/formatCurrency";
-import { useCart } from "../context/CartContext";
+import { CartProductType, useCart } from "../context/CartContext";
 
 interface SearchType {
   search: string;
   setSearch: (value: string) => void;
-}
-interface cartProductsType {
-  userId: string;
-  id: number;
-  image: string;
-  title: string;
-  price: number;
-  rating: { rate: number; count: number };
-  category: string;
-  description: string;
-  quantity: number;
 }
 
 async function removeFromCart(
   productId: number,
   userID: string | undefined,
   token: string | null,
-  setCartProducts: React.Dispatch<React.SetStateAction<cartProductsType[]>>
+  setCartProducts: React.Dispatch<React.SetStateAction<CartProductType[]>>
 ) {
   try {
     const requestData = {
@@ -55,7 +44,6 @@ async function removeFromCart(
     if (!response.ok) {
       throw new Error("Failed to remove product from cart");
     }
-    // Remove the product from cartProducts state
     setCartProducts((prevCartProducts) =>
       prevCartProducts.filter((item) => item.id !== productId)
     );
@@ -68,7 +56,6 @@ export default function Navbar({ search, setSearch }: SearchType) {
   const userID = Cookies.get("userID");
   const token = localStorage.getItem("token");
   const [userEmail, setUserEmail] = useState("");
-  // const [cartProducts, setCartProducts] = useState<Array<cartProductsType>>([]);
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
 
@@ -76,7 +63,6 @@ export default function Navbar({ search, setSearch }: SearchType) {
   const closeCart = () => setIsOpen(false);
 
   const { cartProducts, setCartProducts } = useCart();
-  // console.log("from context", cartProducts);
 
   function handleLogout() {
     Cookies.remove("userID");
@@ -96,35 +82,6 @@ export default function Navbar({ search, setSearch }: SearchType) {
         .catch((error) => console.error("Error fetching user data:", error));
     }
   }, [userID, userEmail]);
-  // console.log(userEmail);
-
-  // useEffect(() => {
-  //   async function getCartProducts() {
-  //     if (!token && !userID) return;
-  //     try {
-  //       const requestData = {
-  //         userId: userID,
-  //       };
-  //       const headers = {
-  //         "Content-Type": "application/json",
-  //         Authorization: `Bearer ${token}`,
-  //       };
-  //       const response = await fetch("http://localhost:3000/cart/userCart", {
-  //         method: "POST",
-  //         headers: headers,
-  //         body: JSON.stringify(requestData),
-  //       });
-  //       if (!response.ok) {
-  //         throw new Error("Failed to fetch favorite products");
-  //       }
-  //       // const cartItems = await response.json();
-  //       // setCartProducts(cartItems);
-  //     } catch (err) {
-  //       console.log(err);
-  //     }
-  //   }
-  //   getCartProducts();
-  // }, []);
 
   function handleSearch(e: React.ChangeEvent<HTMLInputElement>) {
     setSearch(e.target.value);
@@ -198,9 +155,6 @@ export default function Navbar({ search, setSearch }: SearchType) {
               }}
             >
               {cartProducts.reduce((total, cartProduct) => {
-                // const product = cartProducts.find(
-                //   (i) => i.quantity === cartProduct.quantity
-                // );
                 return total + cartProduct.quantity;
               }, 0)}
             </div>
@@ -277,9 +231,6 @@ export default function Navbar({ search, setSearch }: SearchType) {
               Total:{" "}
               {formatCurrency(
                 cartProducts.reduce((total, cartProduct) => {
-                  // const product = cartProducts.find(
-                  //   (i) => i.id === cartProduct.id
-                  // );
                   return (
                     total + (cartProduct.price || 0) * cartProduct.quantity
                   );

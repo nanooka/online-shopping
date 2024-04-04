@@ -9,7 +9,7 @@ import React, {
 } from "react";
 import Cookies from "js-cookie";
 
-interface CartItem {
+export interface CartProductType {
   userId: string;
   id: number;
   image: string;
@@ -22,8 +22,8 @@ interface CartItem {
 }
 
 interface CartContextType {
-  cartProducts: CartItem[];
-  setCartProducts: Dispatch<SetStateAction<CartItem[]>>;
+  cartProducts: CartProductType[];
+  setCartProducts: Dispatch<SetStateAction<CartProductType[]>>;
   getCartProducts: (userID: string, token: string) => void;
 }
 
@@ -33,10 +33,13 @@ interface CartProviderProps {
 }
 
 export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
-  const [cartProducts, setCartProducts] = useState<CartItem[]>([]);
+  const [cartProducts, setCartProducts] = useState<CartProductType[]>([]);
 
-  const getCartProducts = async (userID: string, token: string) => {
-    if (!token && !userID) return;
+  const getCartProducts = async (
+    userID: string | undefined,
+    token: string | null
+  ) => {
+    if (!token || !userID) return;
     try {
       const requestData = {
         userId: userID,
@@ -53,7 +56,7 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
       if (!response.ok) {
         throw new Error("Failed to fetch favorite products");
       }
-      const cartItems: CartItem[] = await response.json();
+      const cartItems: CartProductType[] = await response.json();
       setCartProducts(cartItems);
     } catch (err) {
       console.log(err);
@@ -61,11 +64,10 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
   };
 
   useEffect(() => {
-    // Call the function when the component mounts
     const userID = Cookies.get("userID");
     const token = localStorage.getItem("token");
     getCartProducts(userID, token);
-  }, []); // Empty dependency array so it only runs once
+  }, []);
 
   return (
     <CartContext.Provider

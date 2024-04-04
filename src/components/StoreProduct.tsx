@@ -8,10 +8,7 @@ export default function StoreProduct({
   image,
   title,
   price,
-  id,
   rating,
-  category,
-  description,
 }: ProductType) {
   const [isHovered, setIsHovered] = useState(false);
 

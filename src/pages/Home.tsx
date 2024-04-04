@@ -45,7 +45,6 @@ export default function Home(search: { search: string }) {
   }, [list, startNumber]);
 
   const navigate = useNavigate();
-  // console.log(printedList);
 
   return (
     <InfiniteScroll
@@ -68,8 +67,6 @@ export default function Home(search: { search: string }) {
         style={{
           marginTop: "10em",
           marginBottom: "50px",
-          // width: "100vw",
-          // backgroundColor: "red",
         }}
       >
         <SelectCategory category={category} setCategory={setCategory} />
@@ -78,7 +75,6 @@ export default function Home(search: { search: string }) {
             item.title.toLowerCase().includes(search.search.toLowerCase()) &&
             (item.category === category || category === "category") ? (
               <Col
-                // style={{ height: "400px" }}
                 key={item.id}
                 onClick={() => navigate(`/${item.id}`, { state: { item } })}
               >

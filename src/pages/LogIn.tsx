@@ -2,12 +2,14 @@ import { useState } from "react";
 import { Container, Form, Button } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
+import { useCart } from "../context/CartContext";
 
 export default function LogIn() {
   const [emailInput, setEmailInput] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
+  const { getCartProducts } = useCart();
 
   function emailHandler(e: React.ChangeEvent<HTMLInputElement>) {
     setEmailInput(e.target.value);
@@ -24,8 +26,6 @@ export default function LogIn() {
       password: password,
     };
 
-    console.log(userInfo);
-
     const response = await fetch("/users/login", {
       method: "POST",
       headers: {
@@ -36,7 +36,6 @@ export default function LogIn() {
 
     if (response.ok) {
       const data = await response.json();
-      console.log(data);
       const token = data.token;
       const userID = data.userID;
       Cookies.set("userID", userID, { expires: 1 });
@@ -45,6 +44,7 @@ export default function LogIn() {
       setPassword("");
       setErrorMessage("");
       navigate("/");
+      getCartProducts(userID, token);
     } else {
       setErrorMessage("email or password is not correct");
     }

@@ -6,21 +6,20 @@ import * as Icon from "react-bootstrap-icons";
 import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import { useCart } from "../context/CartContext";
+import { ProductType } from "./Home";
 
 export default function Product() {
-  const userID = Cookies.get("userID");
+  const userID = Cookies.get("userID") || "";
+  const token = (localStorage.getItem("token") || "") as string;
 
   const [isProductInFavorites, setIsProductInFavorites] = useState(false);
   const [isProductInCart, setIsProductInCart] = useState(false);
-  const [quantity, setQuantiy] = useState(0);
-
-  const token = localStorage.getItem("token");
+  const [quantity, setQuantity] = useState(0);
 
   const navigate = useNavigate();
   const location = useLocation();
 
-  const { cartProducts, setCartProducts, getCartProducts } = useCart();
-  console.log("from context", cartProducts);
+  const { cartProducts, getCartProducts } = useCart();
 
   useEffect(() => {
     const productIsInCart = cartProducts.some(
@@ -30,14 +29,14 @@ export default function Product() {
       cartProducts.find((product) => product.id === location.state?.item.id)
         ?.quantity || 0;
     setIsProductInCart(productIsInCart);
-    setQuantiy(quantity);
+    setQuantity(quantity);
     console.log("isProductInCart", isProductInCart);
-  }, []);
+  }, [cartProducts, isProductInCart, location.state?.item.id]);
 
   // get user's favorites list
   useEffect(() => {
     async function getFavoriteProducts() {
-      if (!token && !userID) return;
+      if (!token || !userID) return;
       try {
         const requestData = {
           userId: userID,
@@ -57,7 +56,7 @@ export default function Product() {
         if (!response.ok) {
           throw new Error("Failed to fetch favorite products");
         }
-        const favoriteProducts = await response.json();
+        const favoriteProducts: ProductType[] = await response.json();
         const isFavorite = favoriteProducts.some(
           (favorite) => favorite.id === location.state?.item.id
         );
@@ -70,51 +69,9 @@ export default function Product() {
     getFavoriteProducts();
   }, [isProductInFavorites, location.state?.item.id, token, userID]);
 
-  // get user's cart
-  // useEffect(() => {
-  //   async function getCartProducts() {
-  //     if (!token && !userID) return;
-  //     try {
-  //       const requestData = {
-  //         userId: userID,
-  //       };
-  //       const headers = {
-  //         "Content-Type": "application/json",
-  //         Authorization: `Bearer ${token}`,
-  //       };
-  //       const response = await fetch("http://localhost:3000/cart/userCart", {
-  //         method: "POST",
-  //         headers: headers,
-  //         body: JSON.stringify(requestData),
-  //       });
-  //       if (!response.ok) {
-  //         throw new Error("Failed to fetch favorite products");
-  //       }
-  //       const cartProducts = await response.json();
-  //       const productIsInCart = cartProducts.some(
-  //         (product) => product.id === location.state?.item.id
-  //       );
-
-  //       const quantity =
-  //         cartProducts.find((product) => product.id === location.state?.item.id)
-  //           ?.quantity || 0;
-
-  //       console.log("productIsInCart: ", productIsInCart);
-  //       setIsProductInCart(productIsInCart);
-  //       setQuantiy(quantity);
-  //       console.log("cartProducts:", cartProducts);
-  //       console.log("quantity: ", quantity);
-  //     } catch (err) {
-  //       console.log(err);
-  //     }
-  //   }
-  //   getCartProducts();
-  // }, [isProductInCart, quantity, location.state?.item.id, token, userID]);
-  // console.log("isProductInCart", isProductInCart);
-
   // add product to favorites
   async function addToFavorites() {
-    if (!token && !userID) {
+    if (!token || !userID) {
       navigate("/login");
     } else {
       try {
@@ -175,7 +132,7 @@ export default function Product() {
 
   // add product to cart
   async function addToCart() {
-    if (!token && !userID) {
+    if (!token || !userID) {
       navigate("/login");
     } else {
       try {
@@ -202,7 +159,7 @@ export default function Product() {
         if (!response.ok) {
           throw new Error("Failed to fetch data");
         }
-        setQuantiy(quantity + 1);
+        setQuantity(quantity + 1);
         console.log("quantity: ", quantity);
         getCartProducts(userID, token);
       } catch (error) {
@@ -240,10 +197,9 @@ export default function Product() {
     } catch (error) {
       console.error("Error fetching data: ", error);
     }
-    setQuantiy(0);
+    setQuantity(0);
     getCartProducts(userID, token);
   }
-  console.log(quantity);
 
   // decrease quantity by 1 for "-" button
   async function decreaseProductQuantityInCart() {
@@ -271,7 +227,7 @@ export default function Product() {
       if (!response.ok) {
         throw new Error("Failed to fetch data");
       }
-      setQuantiy(quantity - 1);
+      setQuantity(quantity - 1);
       getCartProducts(userID, token);
     } catch (error) {
       console.error("Error fetching data: ", error);
