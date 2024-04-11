@@ -16,7 +16,7 @@ Online Shopping is an e-commerce platform where you can enjoy shopping from home
 
 ## Technologies Used
 
-- Frontend: Typescript, React, CSS
+- Frontend: Typescript, React, Bootstrap
 - Backend: Node.js, Express.js
 - Database: MongoDB
 - Authentication: JSON Web Tokens (JWT)
@@ -29,7 +29,7 @@ To run the website locally, follow these steps:
 2. Navigate to the project directory.
 3. Install dependencies by running npm install.
 4. Set up environment variables for configuration, such as database connection string, API keys for users, etc.
-5. Run the backend server using npm start.
+5. Run the backend server using npm start - https://github.com/nanooka/online-shopping-backend.
 6. Navigate to the client directory and start the frontend application using npm start.
 
 ## Contributing
